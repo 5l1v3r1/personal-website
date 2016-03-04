@@ -79,10 +79,19 @@ def parse_posts(posts_folder, output_folder):
 
     markdown = mistune.Markdown()  # Save the Markdown instance for improved performance.
 
-    for path in filter(is_markdown_file, [os.path.join(posts_folder, x) for x in os.listdir(posts_folder)]):
-        title, content = parse_post_file(path)
+    for path in filter(is_markdown_file, files_in_folder(posts_folder)):
+        title, content = read_post(path)
         html = markdown(content)
-        write_html_file(title, html, output_folder)
+        write_html(title, html, output_folder)
+
+
+def files_in_folder(folder):
+    """
+    Returns a list of paths to all files in a folder.
+
+    :return: The folder to return paths for.
+    """
+    return [os.path.join(folder, dir_entry) for dir_entry in os.listdir(folder)]
 
 
 def is_markdown_file(path):
@@ -96,12 +105,12 @@ def is_markdown_file(path):
     return (extension == '.markdown' or extension == '.md') and os.path.isfile(path)
 
 
-def parse_post_file(path):
+def read_post(path):
     """
-    Parses a post file and returns a touple with the title and the content of
+    Reades a post file and returns a touple with the title and the content of
     the post. The title will be the filename without the file ending.
 
-    :param path: The post file to parse. This has to be a valid file.
+    :param path: The post file to read. This has to be a valid file.
     :return: (title, content) where title is the filename of the file without
              its file ending, and content is the body of the file.
     """
@@ -111,7 +120,7 @@ def parse_post_file(path):
     return title, content
 
 
-def write_html_file(filename, content, folder):
+def write_html(filename, content, folder):
     """
     Writes an html file to the specified folder. The full filename of this file
     will be filename + '.html'.
