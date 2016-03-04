@@ -38,20 +38,26 @@ def print_usage_instructions():
     print('<usage instructions will be here>')
 
 def parse_posts(posts_folder, output_folder):
-    # Save the Markdown instance for improved performance.
-    markdown = mistune.Markdown()
+    markdown = mistune.Markdown() # Save the Markdown instance for improved performance.
 
-    for dir_entry in os.listdir(posts_folder):
-        path = os.path.join(posts_folder, dir_entry)
-        filename, extension = os.path.splitext(dir_entry)
-        if extension == '.markdown' and os.path.isfile(path):
-            with open(path) as post:
-                title = filename
-                markdown_content = post.read()
-                html_content = markdown(markdown_content)
+    for filename in os.listdir(posts_folder):
+        path = os.path.join(posts_folder, filename)
+        if is_markdown_file(path):
+            title, content = parse_post_file(path)
+            html = markdown(content)
 
-                print(title)
-                print(html_content)
+            print(title)
+            print(html)
+
+def is_markdown_file(path):
+    extension = os.path.splitext(path)[1]
+    return extension == '.markdown' and os.path.isfile(path)
+
+def parse_post_file(path):
+    filename = os.path.split(path)[1]
+    title = os.path.splitext(filename)[0] # Removes extension from filename
+    content = open(path).read()
+    return (title, content)
 
 if __name__ == '__main__':
     main(sys.argv[1:])
