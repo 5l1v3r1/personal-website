@@ -77,11 +77,12 @@ def parse_posts(posts_folder, output_folder):
         print('Error: Folder {} does not exist'.format(posts_folder))
         sys.exit(2)
 
-    for filename in os.listdir(posts_folder):
-        path = os.path.join(posts_folder, filename)
-        if is_markdown_file(path):
-            title, content = parse_post_file(path)
-            write_html_file(title, content, output_folder)
+    markdown = mistune.Markdown()  # Save the Markdown instance for improved performance.
+
+    for path in filter(is_markdown_file, [os.path.join(posts_folder, x) for x in os.listdir(posts_folder)]):
+        title, content = parse_post_file(path)
+        html = markdown(content)
+        write_html_file(title, html, output_folder)
 
 
 def is_markdown_file(path):
@@ -121,10 +122,8 @@ def write_html_file(title, content, folder):
         os.makedirs(folder)
 
     filename = title + '.html'
-    html = mistune.markdown(content)
-
     path = os.path.join(folder, filename)
-    open(path, 'w').write(html)
+    open(path, 'w').write(content)
 
 
 if __name__ == '__main__':
