@@ -102,6 +102,8 @@ def parse_post_file(path):
     the post. The title will be the filename without the file ending.
 
     :param path: The post file to parse. This has to be a valid file.
+    :return: (title, content) where title is the filename of the file without
+             its file ending, and content is the body of the file.
     """
     filename = os.path.split(path)[1]
     title = os.path.splitext(filename)[0]  # Removes extension from filename
