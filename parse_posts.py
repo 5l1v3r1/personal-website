@@ -3,11 +3,26 @@ import mistune
 import os
 import getopt
 
+
 def main(argv):
     posts_folder, output_folder = parse_arguments(argv)
     parse_posts(posts_folder, output_folder)
 
+
 def parse_arguments(argv):
+    """
+    Parses the command line arguments passed to the program. The allowed flags
+    are:
+        -h, --help: Shows the usage instructions of the program.
+        -p, --posts: The directory to read posts from.
+        -o, --output: The directory to output html to.
+
+    If the arguments don't match the specification the usage instructions
+    for the program is shown.
+
+    :param argv: A list of command line arguments.
+    :return: A folder to read posts from and a folder to output html to.
+    """
     try:
         opts, args = getopt.getopt(argv, 'hp:o:', ['help', 'posts=', 'output='])
     except getopt.GetoptError:
@@ -28,16 +43,36 @@ def parse_arguments(argv):
     if posts == '' or output == '':
         invalid_arguments()
 
-    return (posts, output)
+    return posts, output
+
 
 def invalid_arguments():
+    """
+    Prints the usage instructions for the program and exits with error code 2.
+    """
     print_usage_instructions()
-    sys.exit(2) # Exit code 2 = command line syntax error
+    sys.exit(2)  # Exit code 2 = command line syntax error
+
 
 def print_usage_instructions():
-    print('<usage instructions will be here>')
+    """
+    Prints the usage instructions for the program.
+    """
+    print('parse.posts.py usage:')
+    print('\t-h, --help: Shows the usage instructions of the program')
+    print('\t-p, --posts: The directory to read posts from.')
+    print('\t-o, --output: The directory to output html to.')
+
 
 def parse_posts(posts_folder, output_folder):
+    """
+    Parses all posts in the posts folder, parses their content and outputs
+    generated html to the output folder. The posts have to have the file ending
+    .markdown or .md.
+
+    :param posts_folder: The folder to read posts from.
+    :param output_folder: The folder to output html to.
+    """
     if not os.path.exists(posts_folder):
         print('Error: Folder {} does not exist'.format(posts_folder))
         sys.exit(2)
@@ -48,17 +83,40 @@ def parse_posts(posts_folder, output_folder):
             title, content = parse_post_file(path)
             write_html_file(title, content, output_folder)
 
+
 def is_markdown_file(path):
+    """
+    Checks whether or not an item in a directory listing is a markdown file.
+    Markdown files have the file ending .markdown or .md.
+
+    :param path: The path to the file or folder to check.
+    """
     extension = os.path.splitext(path)[1]
-    return extension == '.markdown' and os.path.isfile(path)
+    return (extension == '.markdown' or extension == '.md') and os.path.isfile(path)
+
 
 def parse_post_file(path):
+    """
+    Parses a post file and returns a touple with the title and the content of
+    the post. The title will be the filename without the file ending.
+
+    :param path: The post file to parse. This has to be a valid file.
+    """
     filename = os.path.split(path)[1]
-    title = os.path.splitext(filename)[0] # Removes extension from filename
+    title = os.path.splitext(filename)[0]  # Removes extension from filename
     content = open(path).read()
-    return (title, content)
+    return title, content
+
 
 def write_html_file(title, content, folder):
+    """
+    Converts a post to html and writes it to disk. The file will be written to
+    the specified folder. Its filename will be the title + .html.
+
+    :param title: The title of the post.
+    :param content: The content of the post. This should be formatted as markdown.
+    :param folder: The folder to write the new file to.
+    """
     if not os.path.exists(folder):
         os.makedirs(folder)
 
@@ -67,6 +125,7 @@ def write_html_file(title, content, folder):
 
     path = os.path.join(folder, filename)
     open(path, 'w').write(html)
+
 
 if __name__ == '__main__':
     main(sys.argv[1:])
