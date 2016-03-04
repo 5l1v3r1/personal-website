@@ -58,10 +58,10 @@ def print_usage_instructions():
     """
     Prints the usage instructions for the program.
     """
-    print('parse.posts.py usage:')
-    print('\t-h, --help: Shows the usage instructions of the program')
-    print('\t-p, --posts: The directory to read posts from.')
-    print('\t-o, --output: The directory to output html to.')
+    print('parse_posts.py usage:\n')
+    print('\t-h, --help:\tShows the usage instructions of the program')
+    print('\t-p, --posts:\tThe directory to read posts from.')
+    print('\t-o, --output:\tThe directory to output html to.')
 
 
 def parse_posts(posts_folder, output_folder):
