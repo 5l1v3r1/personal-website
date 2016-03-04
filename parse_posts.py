@@ -38,21 +38,15 @@ def print_usage_instructions():
     print('<usage instructions will be here>')
 
 def parse_posts(posts_folder, output_folder):
-    markdown = mistune.Markdown() # Save the Markdown instance for improved performance.
+    if not os.path.exists(posts_folder):
+        print('Error: Folder {} does not exist'.format(posts_folder))
+        sys.exit(2)
 
     for filename in os.listdir(posts_folder):
         path = os.path.join(posts_folder, filename)
         if is_markdown_file(path):
             title, content = parse_post_file(path)
-            html = markdown(content)
-
-            output_path = os.path.join(output_folder, title) + '.html'
-
-            if not os.path.exists(output_folder):
-                os.makedirs(output_folder)
-
-            f = open(output_path, 'w')
-            f.write(html)
+            write_html_file(title, content, output_folder)
 
 def is_markdown_file(path):
     extension = os.path.splitext(path)[1]
@@ -63,6 +57,16 @@ def parse_post_file(path):
     title = os.path.splitext(filename)[0] # Removes extension from filename
     content = open(path).read()
     return (title, content)
+
+def write_html_file(title, content, folder):
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+
+    filename = title + '.html'
+    html = mistune.markdown(content)
+
+    path = os.path.join(folder, filename)
+    open(path, 'w').write(html)
 
 if __name__ == '__main__':
     main(sys.argv[1:])
