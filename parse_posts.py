@@ -111,19 +111,19 @@ def parse_post_file(path):
     return title, content
 
 
-def write_html_file(title, content, folder):
+def write_html_file(filename, content, folder):
     """
-    Converts a post to html and writes it to disk. The file will be written to
-    the specified folder. Its filename will be the title + .html.
+    Writes an html file to the specified folder. The full filename of this file
+    will be filename + '.html'.
 
-    :param title: The title of the post.
-    :param content: The content of the post. This should be formatted as markdown.
+    :param filename: The filename of the new file (without file ending)
+    :param content: The content to write to the file.
     :param folder: The folder to write the new file to.
     """
     if not os.path.exists(folder):
         os.makedirs(folder)
 
-    filename = title + '.html'
+    filename = filename + '.html'
     path = os.path.join(folder, filename)
     open(path, 'w').write(content)
 
