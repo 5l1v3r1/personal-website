@@ -46,8 +46,13 @@ def parse_posts(posts_folder, output_folder):
             title, content = parse_post_file(path)
             html = markdown(content)
 
-            print(title)
-            print(html)
+            output_path = os.path.join(output_folder, title) + '.html'
+
+            if not os.path.exists(output_folder):
+                os.makedirs(output_folder)
+
+            f = open(output_path, 'w')
+            f.write(html)
 
 def is_markdown_file(path):
     extension = os.path.splitext(path)[1]
