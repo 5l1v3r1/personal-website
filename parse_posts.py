@@ -2,6 +2,7 @@ import sys
 import mistune
 import os
 import getopt
+import pystache
 
 
 def main(argv):
@@ -120,21 +121,29 @@ def read_post(path):
     return title, content
 
 
-def write_html(filename, content, folder):
+def write_html(title, content, folder):
     """
     Writes an html file to the specified folder. The full filename of this file
-    will be filename + '.html'.
+    will be title + '.html'.
 
-    :param filename: The filename of the new file (without file ending)
+    :param title: The filename of the new file (without file ending)
     :param content: The content to write to the file.
     :param folder: The folder to write the new file to.
     """
     if not os.path.exists(folder):
         os.makedirs(folder)
 
-    filename = filename + '.html'
+    html = render_post(title, content)
+    filename = title + '.html'
+    
     path = os.path.join(folder, filename)
-    open(path, 'w').write(content)
+    open(path, 'w').write(html)
+
+
+def render_post(title, content):
+    renderer = pystache.Renderer(search_dirs='templates')
+    blogPost = renderer.render_name('blog_post', {'content': content})
+    return renderer.render_name('main', {'body': blogPost, 'title': title})
 
 
 if __name__ == '__main__':
