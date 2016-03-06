@@ -15,8 +15,8 @@ def parse_arguments(argv):
     Parses the command line arguments passed to the program. The allowed flags
     are:
         -h, --help: Shows the usage instructions of the program.
-        -p, --posts: The directory to read posts from.
-        -o, --output: The directory to output html to.
+        -p, --posts <directory>: The directory to read posts from.
+        -o, --output <directory>: The directory to output html to.
 
     If the arguments don't match the specification the usage instructions
     for the program is shown.
@@ -60,9 +60,9 @@ def print_usage_instructions():
     Prints the usage instructions for the program.
     """
     print('parse_posts.py usage:\n')
-    print('\t-h, --help:\tShows the usage instructions of the program')
-    print('\t-p, --posts:\tThe directory to read posts from.')
-    print('\t-o, --output:\tThe directory to output html to.')
+    print('\t-h, --help: Shows the usage instructions of the program')
+    print('\t-p, --posts <directory>: The directory to read posts from.')
+    print('\t-o, --output <directory>: The directory to output html to.')
 
 
 def parse_posts(posts_folder, output_folder):
@@ -135,7 +135,7 @@ def write_html(title, content, folder):
 
     html = render_post(title, content)
     filename = title + '.html'
-    
+
     path = os.path.join(folder, filename)
     open(path, 'w').write(html)
 
