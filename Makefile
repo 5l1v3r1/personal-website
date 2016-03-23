@@ -2,7 +2,7 @@ all: run
 
 run: clean fetch
 	python parse_posts.py -p posts/ -o output/
-	cd output/ && git add . && git commit -m "COMMIT MSG" && git push
+	cd output/ && git add . && git commit -m "Site regeneration" && git push
 
 parse: clean
 	python parse_posts.py -p posts/ -o output/
