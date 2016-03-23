@@ -78,13 +78,15 @@ def parse_posts(posts_folder, output_folder):
         print('Error: Folder {} does not exist'.format(posts_folder))
         sys.exit(2)
 
-    markdown = mistune.Markdown()  # Save the Markdown instance for improved performance.
-
+    posts = []
     for path in filter(is_markdown_file, files_in_folder(posts_folder)):
-        title, content = read_post(path)
-        html = markdown(content)
-        write_html(title, html, output_folder)
+        content, filename = read_file(path)
+        html = render_post(content, filename)
+        write_file(filename + '.html', html, output_folder)
+        posts.append(filename + '.html')
 
+    html = render_index(posts)
+    write_file('index.html', html, output_folder)
 
 def files_in_folder(folder):
     """
@@ -106,44 +108,56 @@ def is_markdown_file(path):
     return (extension == '.markdown' or extension == '.md') and os.path.isfile(path)
 
 
-def read_post(path):
+def read_file(path):
     """
-    Reades a post file and returns a touple with the title and the content of
-    the post. The title will be the filename without the file ending.
+    Reads a file from the specified path.
 
-    :param path: The post file to read. This has to be a valid file.
-    :return: (title, content) where title is the filename of the file without
-             its file ending, and content is the body of the file.
+    :return: A tuple with the content of the file and the filename without the
+             extension.
     """
     filename = os.path.split(path)[1]
-    title = os.path.splitext(filename)[0]  # Removes extension from filename
+    filename_without_extension = os.path.splitext(filename)[0] # Removes extension from filename
     content = open(path).read()
-    return title, content
+    return content, filename_without_extension
 
 
-def write_html(title, content, folder):
+def render_post(content, title):
     """
-    Writes an html file to the specified folder. The full filename of this file
-    will be title + '.html'.
+    Renders a post to HTML and returns the result. This function is resposible
+    for extracting all necessary information from the content.
 
-    :param title: The filename of the new file (without file ending)
-    :param content: The content to write to the file.
+    :param content: The content to render.
+    :param title: The title of the post. TO BE DEPRECATED. Should be replaced
+                     with YAML front matter.
+    """
+    content = mistune.markdown(content)
+
+    renderer = pystache.Renderer(search_dirs='templates')
+    body = renderer.render_name('blog_post', {'content': content})
+    html = renderer.render_name('main', {'body': body, 'title': title})
+    return html
+
+
+def render_index(posts):
+    renderer = pystache.Renderer(search_dirs='templates')
+    body = renderer.render_name('index', {'posts': posts})
+    html = renderer.render_name('main', {'body': body, 'title': 'Index'})
+    return html
+
+
+def write_file(filename, content, folder):
+    """
+    Writes a file to a folder.
+
+    :param filename: The filename of the new file.
+    :param content: The content of the new file.
     :param folder: The folder to write the new file to.
     """
     if not os.path.exists(folder):
         os.makedirs(folder)
 
-    html = render_post(title, content)
-    filename = title + '.html'
-
     path = os.path.join(folder, filename)
-    open(path, 'w').write(html)
-
-
-def render_post(title, content):
-    renderer = pystache.Renderer(search_dirs='templates')
-    blogPost = renderer.render_name('blog_post', {'content': content})
-    return renderer.render_name('main', {'body': blogPost, 'title': title})
+    open(path, 'w').write(content)
 
 
 if __name__ == '__main__':
