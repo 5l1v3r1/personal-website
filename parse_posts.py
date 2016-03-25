@@ -3,6 +3,7 @@ import mistune
 import os
 import getopt
 import pystache
+import shutil
 
 
 def main(argv):
@@ -79,46 +80,22 @@ def parse_posts(posts_folder, output_folder):
         sys.exit(2)
 
     posts = []
-    for path in filter(is_markdown_file, files_in_folder(posts_folder)):
-        content, filename = read_file(path)
-        html = render_post(content, filename)
-        write_file(filename + '.html', html, output_folder)
-        posts.append(filename + '.html')
+    for dir_entry in os.scandir(posts_folder):
+        if not dir_entry.name.startswith('.'): # Ignore hidden files and folders. Will not work on Windows.
+            if dir_entry.is_file():
+                filename, extension = os.path.splitext(dir_entry.name)
+                if extension == '.markdown' or extension == '.md':
+                    content = open(dir_entry.path).read()
+                    html = render_post(content, filename)
+                    write_file(filename + '.html', html, output_folder)
+                    posts.append(filename + '.html')
+                else:
+                    shutil.copy(dir_entry.path, output_folder)
+            elif dir_entry.is_dir():
+                shutil.copytree(dir_entry.path, os.path.join(output_folder, dir_entry.name))
 
     html = render_index(posts)
     write_file('index.html', html, output_folder)
-
-def files_in_folder(folder):
-    """
-    Returns a list of paths to all files in a folder.
-
-    :return: The folder to return paths for.
-    """
-    return [os.path.join(folder, dir_entry) for dir_entry in os.listdir(folder)]
-
-
-def is_markdown_file(path):
-    """
-    Checks whether or not an item in a directory listing is a markdown file.
-    Markdown files have the file ending .markdown or .md.
-
-    :param path: The path to the file or folder to check.
-    """
-    extension = os.path.splitext(path)[1]
-    return (extension == '.markdown' or extension == '.md') and os.path.isfile(path)
-
-
-def read_file(path):
-    """
-    Reads a file from the specified path.
-
-    :return: A tuple with the content of the file and the filename without the
-             extension.
-    """
-    filename = os.path.split(path)[1]
-    filename_without_extension = os.path.splitext(filename)[0] # Removes extension from filename
-    content = open(path).read()
-    return content, filename_without_extension
 
 
 def render_post(content, title):
