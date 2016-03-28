@@ -85,9 +85,7 @@ def parse_posts(posts_folder, output_folder):
             if dir_entry.is_file():
                 filename, extension = os.path.splitext(dir_entry.name)
                 if extension == '.markdown' or extension == '.md':
-                    content = open(dir_entry.path).read()
-                    html = render_post(content, filename)
-                    write_file(filename + '.html', html, output_folder)
+                    parse_post(dir_entry, output_folder)
                     posts.append(filename + '.html')
                 else:
                     shutil.copy(dir_entry.path, output_folder)
@@ -96,6 +94,17 @@ def parse_posts(posts_folder, output_folder):
 
     html = render_index(posts)
     write_file('index.html', html, output_folder)
+
+
+def parse_post(dir_entry, output_folder):
+    f = open(dir_entry.path)
+
+    metadata = read_metadata(f)
+    content = f.read()
+
+    title = metadata['title'] if 'title' in metadata else os.path.splitext(dir_entry.name)[0]
+    html = render_post(content, title)
+    write_file(title + '.html', html, output_folder)
 
 
 def read_metadata(f):
