@@ -101,9 +101,14 @@ def parse_post(dir_entry, output_folder):
 
     metadata = read_metadata(f)
     content = f.read()
+    html_content = mistune.markdown(content)
 
     title = metadata['title'] if 'title' in metadata else os.path.splitext(dir_entry.name)[0]
-    html = render_post(content, title)
+
+    renderer = pystache.Renderer(search_dirs='templates')
+    body = renderer.render_name('blog_post', {'content': html_content, 'metadata': metadata})
+    html = renderer.render_name('main', {'body': body, 'title': title})
+
     write_file(title + '.html', html, output_folder)
 
 
@@ -138,23 +143,6 @@ def read_metadata(f):
         f.seek(0)
 
     return metadata
-
-
-def render_post(content, title):
-    """
-    Renders a post to HTML and returns the result. This function is resposible
-    for extracting all necessary information from the content.
-
-    :param content: The content to render.
-    :param title: The title of the post. TO BE DEPRECATED. Should be replaced
-                     with YAML front matter.
-    """
-    content = mistune.markdown(content)
-
-    renderer = pystache.Renderer(search_dirs='templates')
-    body = renderer.render_name('blog_post', {'content': content})
-    html = renderer.render_name('main', {'body': body, 'title': title})
-    return html
 
 
 def render_index(posts):
