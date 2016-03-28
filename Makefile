@@ -1,4 +1,4 @@
-all: run
+all: parse
 
 run: clean fetch
 	python parse_posts.py -p posts/ -o output/
