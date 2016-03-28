@@ -81,7 +81,7 @@ def parse_posts(posts_folder, output_folder):
 
     posts = []
     for dir_entry in os.scandir(posts_folder):
-        if not dir_entry.name.startswith('.'): # Ignore hidden files and folders. Will not work on Windows.
+        if not dir_entry.name.startswith('.') and dir_entry.name != 'drafts': # Ignore hidden files and folders. Will not work on Windows.
             if dir_entry.is_file():
                 filename, extension = os.path.splitext(dir_entry.name)
                 if extension == '.markdown' or extension == '.md':
