@@ -98,6 +98,39 @@ def parse_posts(posts_folder, output_folder):
     write_file('index.html', html, output_folder)
 
 
+def read_metadata(f):
+    """
+    Reads a metadata block from a file object. A metadata block begins with the
+    line '---' and ends with another identical line. Metadata attributes are
+    divided into key and value, separated by a colon and a space. Values can
+    be either single values or comma separated lists. If a value is a comma
+    separated list it will be converted to a list object, otherwise it will be
+    a simple string.
+
+    :param f: A file object to read from.
+    :return: A dictionary of all key-value pairs found in a metadata block in
+             the given file.
+    """
+    metadata = dict()
+
+    if f.readline() == '---\n':
+        for line in f:
+            if line == '---\n':
+                break
+
+            key, value = line.split(': ')
+            value = value.rstrip() # Remove newline character \n.
+            values = value.split(', ')
+            if len(values) > 1:
+                metadata[key] = values
+            else:
+                metadata[key] = value
+    else:
+        f.seek(0)
+
+    return metadata
+
+
 def render_post(content, title):
     """
     Renders a post to HTML and returns the result. This function is resposible
