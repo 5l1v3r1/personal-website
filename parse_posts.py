@@ -85,9 +85,7 @@ def parse_posts(posts_folder, output_folder):
             if dir_entry.is_file():
                 filename, extension = os.path.splitext(dir_entry.name)
                 if extension == '.markdown' or extension == '.md':
-                    content = open(dir_entry.path).read()
-                    html = render_post(content, filename)
-                    write_file(filename + '.html', html, output_folder)
+                    parse_post(dir_entry, output_folder)
                     posts.append(filename + '.html')
                 else:
                     shutil.copy(dir_entry.path, output_folder)
@@ -98,21 +96,59 @@ def parse_posts(posts_folder, output_folder):
     write_file('index.html', html, output_folder)
 
 
-def render_post(content, title):
+def parse_post(dir_entry, output_folder):
     """
-    Renders a post to HTML and returns the result. This function is resposible
-    for extracting all necessary information from the content.
+    Parses a post from a markdown file and renders the result to a html file.
 
-    :param content: The content to render.
-    :param title: The title of the post. TO BE DEPRECATED. Should be replaced
-                     with YAML front matter.
+    :param dir_entry: A directory entry for the post file to parse.
+    :param output_folder: The folder to write the rendered post file to.
     """
-    content = mistune.markdown(content)
+    f = open(dir_entry.path)
+
+    metadata = read_metadata(f)
+    content = f.read()
+    html_content = mistune.markdown(content)
+
+    title = metadata['title'] if 'title' in metadata else os.path.splitext(dir_entry.name)[0]
 
     renderer = pystache.Renderer(search_dirs='templates')
-    body = renderer.render_name('blog_post', {'content': content})
+    body = renderer.render_name('blog_post', {'content': html_content, 'metadata': metadata})
     html = renderer.render_name('main', {'body': body, 'title': title})
-    return html
+
+    write_file(title + '.html', html, output_folder)
+
+
+def read_metadata(f):
+    """
+    Reads a metadata block from a file object. A metadata block begins with the
+    line '---' and ends with another identical line. Metadata attributes are
+    divided into key and value, separated by a colon and a space. Values can
+    be either single values or comma separated lists. If a value is a comma
+    separated list it will be converted to a list object, otherwise it will be
+    a simple string.
+
+    :param f: A file object to read from.
+    :return: A dictionary of all key-value pairs found in a metadata block in
+             the given file.
+    """
+    metadata = dict()
+
+    if f.readline() == '---\n':
+        for line in f:
+            if line == '---\n':
+                break
+
+            key, value = line.split(': ')
+            value = value.rstrip() # Remove newline character \n.
+            values = value.split(', ')
+            if len(values) > 1:
+                metadata[key] = values
+            else:
+                metadata[key] = value
+    else:
+        f.seek(0)
+
+    return metadata
 
 
 def render_index(posts):
