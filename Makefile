@@ -8,7 +8,7 @@ parse: clean
 	python parse_posts.py -p posts/ -o output/
 
 fetch:
-	cd posts/ && git pull
+	cd posts/ && git reset --hard && git pull
 
 clean:
 	rm -rf output/*
