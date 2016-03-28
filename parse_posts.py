@@ -97,6 +97,12 @@ def parse_posts(posts_folder, output_folder):
 
 
 def parse_post(dir_entry, output_folder):
+    """
+    Parses a post from a markdown file and renders the result to a html file.
+
+    :param dir_entry: A directory entry for the post file to parse.
+    :param output_folder: The folder to write the rendered post file to.
+    """
     f = open(dir_entry.path)
 
     metadata = read_metadata(f)
