@@ -84,6 +84,7 @@ def parse_posts(posts_folder, output_folder):
         sys.exit(2)
 
     posts = read_posts(posts_folder, output_folder)
+    posts.sort(key=lambda post: post['date'], reverse=True)
 
     for post in posts:
         render_post(post, output_folder)
