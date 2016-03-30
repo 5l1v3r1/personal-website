@@ -125,16 +125,21 @@ def parse_post(dir_entry):
     f = open(dir_entry.path)
 
     metadata = read_metadata(f)
-    content = f.read()
-    html_content = mistune.markdown(content)
+    title = read_title(f)
+    first_paragraph = read_first_paragraph(f)
+    content = read_rest_of_file(f)
 
-    # If there is no title attribute in the metadata the filename (without suffix) will be used.
-    post = {'content': html_content}
+    markdown = mistune.Markdown()
+    first_paragraph = markdown(first_paragraph)
+    content = markdown(content)
 
-    if 'title' not in metadata:
-        post['title'] = os.path.splitext(dir_entry.name)[0]
-
+    post = {
+        'title': title,
+        'first_paragraph': first_paragraph,
+        'content': content
+    }
     post.update(metadata)
+
     return post
 
 
@@ -169,6 +174,30 @@ def read_metadata(f):
         f.seek(0)
 
     return metadata
+
+
+def read_title(f):
+    # First line of post content is always a title that starts with '# '.
+    title = f.readline().replace('# ', '').rstrip()
+    # Ignore empty line after title.
+    f.readline()
+    return title
+
+
+def read_first_paragraph(f):
+    # Read content until the first paragraph ends.
+    first_paragraph = '';
+    for line in f:
+        if line == '\n':
+            break
+
+        first_paragraph += line
+
+    return first_paragraph.rstrip()
+
+
+def read_rest_of_file(f):
+    return f.read().rstrip()
 
 
 def render_post(post, output_folder):
