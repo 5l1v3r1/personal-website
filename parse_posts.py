@@ -129,10 +129,11 @@ def parse_post(dir_entry):
     html_content = mistune.markdown(content)
 
     # If there is no title attribute in the metadata the filename (without suffix) will be used.
-    if 'title' not in metadata:
-        metadata['title'] = os.path.splitext(dir_entry.name)[0]
-
     post = {'content': html_content}
+
+    if 'title' not in metadata:
+        post['title'] = os.path.splitext(dir_entry.name)[0]
+
     post.update(metadata)
     return post
 
