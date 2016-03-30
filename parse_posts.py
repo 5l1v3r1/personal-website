@@ -81,9 +81,6 @@ def parse_posts(posts_folder, output_folder):
         print('Error: Folder {} does not exist'.format(posts_folder))
         sys.exit(2)
 
-    if not os.path.exists(output_folder):
-        os.makedirs(output_folder)
-
     posts = read_posts(posts_folder, output_folder)
 
     for post in posts:
@@ -201,6 +198,9 @@ def render_template(template, data, output_folder):
     :param data: The data to use when rendering.
     :param output_folder: The folder to write the new html file to.
     """
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
+
     renderer = pystache.Renderer(search_dirs='templates')
     body = renderer.render_name(template, data)
     html = renderer.render_name('main', {'body': body, 'title': data['title']})
