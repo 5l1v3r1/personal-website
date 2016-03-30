@@ -1,7 +1,21 @@
+<style scoped>
+    h1 {
+        margin-bottom: 0;
+    }
+
+    h1, .date {
+        text-align: center;
+    }
+
+    p {
+        text-align: justify;
+    }
+</style>
+
 <article>
     {{#post}}
         <h1>{{title}}</h1>
-        <span>{{date}}</span>
+        <p class="date">{{date}}</p>
         {{{first_paragraph}}}
         {{{content}}}
     {{/post}}
