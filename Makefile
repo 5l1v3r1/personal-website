@@ -1,7 +1,6 @@
 all: parse
 
-run: clean fetch
-	python parse_posts.py -p posts/ -o output/
+run: fetch parse
 	cd output/ && git add . && git commit -m "Site regeneration" && git push
 
 parse: clean
