@@ -1,12 +1,13 @@
-all: parse
+all: build_site
 
-run: fetch parse
+deploy: fetch_posts build_site
 	cd output/ && git add . && git commit -m "Site regeneration" && git push
 
-parse: clean
+build_site: clean
+	cp -r static/* output/
 	python parse_posts.py -p posts/ -o output/
 
-fetch:
+fetch_posts:
 	cd posts/ && git reset --hard && git pull
 
 clean:

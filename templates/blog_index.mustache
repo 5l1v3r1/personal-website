@@ -1,0 +1,30 @@
+<style scoped>
+    header {
+        text-align: center;
+    }
+
+    h1 {
+        margin-bottom: 0;
+    }
+
+    h1>a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    section>p {
+        text-align: justify;
+    }
+</style>
+
+<header>
+    <h1>Mats Högberg</h1>
+</header>
+{{#posts}}
+    <section>
+        <h1><a href="posts/{{title}}.html">{{title}}</a></h1>
+        <p class="date">{{date}}</p>
+        {{{first_paragraph}}}
+        <hr />
+    </section>
+{{/posts}}

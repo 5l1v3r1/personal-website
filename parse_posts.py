@@ -81,9 +81,6 @@ def parse_posts(posts_folder, output_folder):
         print('Error: Folder {} does not exist'.format(posts_folder))
         sys.exit(2)
 
-    if not os.path.exists(output_folder):
-        os.makedirs(output_folder)
-
     posts = read_posts(posts_folder, output_folder)
 
     for post in posts:
@@ -210,7 +207,7 @@ def render_post(post, output_folder):
     :param post: The post to use when rendering the template.
     :param output_folder: The folder to write the rendered file to.
     """
-    render_template('blog_post', {'title': post['title'], 'post': post}, output_folder)
+    render_template('blog_post', {'title': post['title'], 'post': post}, os.path.join(output_folder, 'posts'))
 
 
 def render_index(posts, output_folder):
@@ -220,7 +217,7 @@ def render_index(posts, output_folder):
     :param posts: The posts to use when rendering the template.
     :param output_folder: The folder to write the rendered file to.
     """
-    render_template('index', {'title': 'Index', 'posts': posts}, output_folder)
+    render_template('blog_index', {'title': 'blog', 'posts': posts}, output_folder)
 
 
 def render_template(template, data, output_folder):
@@ -231,6 +228,9 @@ def render_template(template, data, output_folder):
     :param data: The data to use when rendering.
     :param output_folder: The folder to write the new html file to.
     """
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
+
     renderer = pystache.Renderer(search_dirs='templates')
     body = renderer.render_name(template, data)
     html = renderer.render_name('main', {'body': body, 'title': data['title']})
