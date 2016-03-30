@@ -178,7 +178,7 @@ def render_post(post, output_folder):
     :param post: The post to use when rendering the template.
     :param output_folder: The folder to write the rendered file to.
     """
-    render_template('blog_post', {'title': post['title'], 'post': post}, output_folder)
+    render_template('blog_post', {'title': post['title'], 'post': post}, os.path.join(output_folder, 'posts'))
 
 
 def render_index(posts, output_folder):
