@@ -4,6 +4,8 @@ import os
 import getopt
 import pystache
 import shutil
+import git
+import datetime
 
 
 def main(argv):
@@ -82,6 +84,7 @@ def parse_posts(posts_folder, output_folder):
         sys.exit(2)
 
     posts = read_posts(posts_folder, output_folder)
+    posts.sort(key=lambda post: post['date'], reverse=True)
 
     for post in posts:
         render_post(post, output_folder)
@@ -99,13 +102,14 @@ def read_posts(posts_folder, output_folder):
     :param output_folder: The folder to copy files to.
     :returns: A list of all posts found in the posts folder.
     """
+    repo = git.Repo(posts_folder)
     posts = []
     for dir_entry in os.scandir(posts_folder):
         if not dir_entry.name.startswith('.') and dir_entry.name != 'drafts': # Ignore hidden files and folders. Will not work on Windows.
             if dir_entry.is_file():
                 filename, extension = os.path.splitext(dir_entry.name)
                 if extension == '.markdown' or extension == '.md':
-                    post = parse_post(dir_entry)
+                    post = parse_post(dir_entry, repo)
                     posts.append(post)
                 else:
                     shutil.copy(dir_entry.path, output_folder)
@@ -115,7 +119,7 @@ def read_posts(posts_folder, output_folder):
     return posts
 
 
-def parse_post(dir_entry):
+def parse_post(dir_entry, repo):
     """
     Parses a post written in markdown with optional metadata from a file.
 
@@ -133,7 +137,11 @@ def parse_post(dir_entry):
     first_paragraph = markdown(first_paragraph)
     content = markdown(content)
 
+    latest_commit = next(repo.iter_commits(paths=dir_entry.name))
+    date = datetime.date.fromtimestamp(latest_commit.authored_date)
+
     post = {
+        'date': date,
         'title': title,
         'first_paragraph': first_paragraph,
         'content': content
