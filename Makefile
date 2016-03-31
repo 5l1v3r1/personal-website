@@ -12,3 +12,6 @@ fetch_posts:
 
 clean:
 	rm -rf output/*
+
+server:
+	cd output/ && python3 -m http.server
