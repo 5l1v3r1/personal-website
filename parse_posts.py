@@ -128,10 +128,18 @@ def parse_post(dir_entry, repo):
     """
     f = open(dir_entry.path)
 
-    metadata = read_metadata(f)
-    title = read_title(f)
-    first_paragraph = read_first_paragraph(f)
-    content = read_rest_of_file(f)
+    file_content = open(dir_entry.path).read()
+    segments = file_content.split('\n\n')
+
+    metadata = dict()
+    if not segments[0].startswith('# '):
+        # File didn't start with title -> There is metadata.
+        metadata = parse_metadata(segments[0])
+        segments = segments[1:]
+
+    title = segments[0].replace('# ', '')
+    first_paragraph = segments[1]
+    content = '\n\n'.join(segments[2:])
 
     markdown = mistune.Markdown()
     first_paragraph = markdown(first_paragraph)
@@ -151,61 +159,28 @@ def parse_post(dir_entry, repo):
     return post
 
 
-def read_metadata(f):
+def parse_metadata(block):
     """
-    Reads a metadata block from a file object. A metadata block begins with the
-    line '---' and ends with another identical line. Metadata attributes are
-    divided into key and value, separated by a colon and a space. Values can
-    be either single values or comma separated lists. If a value is a comma
+    Parses a block of metadata. Metadata attributes are divided into key and
+    value, separated by a colon and a space, with one attribute per line. Values
+    can be either single values or comma separated lists. If a value is a comma
     separated list it will be converted to a list object, otherwise it will be
     a simple string.
 
-    :param f: A file object to read from.
-    :return: A dictionary of all key-value pairs found in a metadata block in
-             the given file.
+    :param block: A string with a block of metadata.
+    :return: A dictionary of all key-value pairs found in a metadata block.
     """
     metadata = dict()
-
-    if f.readline() == '---\n':
-        for line in f:
-            if line == '---\n':
-                break
-
-            key, value = line.split(': ')
-            value = value.rstrip() # Remove newline character \n.
-            values = value.split(', ')
-            if len(values) > 1:
-                metadata[key] = values
-            else:
-                metadata[key] = value
-    else:
-        f.seek(0)
+    lines = block.split('\n')
+    for line in lines:
+        key, value = line.split(': ')
+        values = value.split(', ')
+        if len(values) > 1:
+            metadata[key] = values
+        else:
+            metadata[key] = value
 
     return metadata
-
-
-def read_title(f):
-    # First line of post content is always a title that starts with '# '.
-    title = f.readline().replace('# ', '').rstrip()
-    # Ignore empty line after title.
-    f.readline()
-    return title
-
-
-def read_first_paragraph(f):
-    # Read content until the first paragraph ends.
-    first_paragraph = '';
-    for line in f:
-        if line == '\n':
-            break
-
-        first_paragraph += line
-
-    return first_paragraph.rstrip()
-
-
-def read_rest_of_file(f):
-    return f.read().rstrip()
 
 
 def render_post(post, output_folder):
