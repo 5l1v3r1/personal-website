@@ -111,37 +111,6 @@ def build_blog(posts_folder, output_folder):
     render_template('blog_index', {'title': 'blog', 'posts': posts}, os.path.join(output_folder, 'blog.html'))
 
 
-def read_posts(posts_folder, output_folder):
-    """
-    Scans the posts folder. All non-markdown files and folders will be copied
-    to the output folder without modification. Markdown files directly in the
-    posts folder will be parsed. Files or folders that start with '_' will be
-    ignored.
-
-    :param posts_folder: The folder to look for files in.
-    :param output_folder: The folder to copy files to.
-    :returns: A list of all posts found in the posts folder.
-    """
-    posts = []
-
-    for dir_entry in os.scandir(posts_folder):
-        if not dir_entry.name.startswith('_') and not dir_entry.name.startswith('.'): # Ignore hidden files and folders. Will not work on Windows.
-            if dir_entry.is_file():
-                filename, extension = os.path.splitext(dir_entry.name)
-                if extension == '.markdown' or extension == '.md':
-                    post = parse_post(dir_entry)
-                    posts.append(post)
-                else:
-                    if not os.path.exists(output_folder):
-                        os.makedirs(output_folder)
-
-                    shutil.copy(dir_entry.path, output_folder)
-            elif dir_entry.is_dir():
-                posts.extend(read_posts(dir_entry.path, os.path.join(output_folder, dir_entry.name, '')))
-
-    return posts
-
-
 def parse_post(path):
     """
     Parses a post written in markdown with optional metadata from a file.
