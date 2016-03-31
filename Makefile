@@ -5,7 +5,7 @@ deploy: fetch_posts build_site
 
 build_site: clean
 	cp -r static/* output/
-	python parse_posts.py -p posts/ -o output/
+	python build_blog.py -p posts/ -o output/
 
 fetch_posts:
 	cd posts/ && git reset --hard && git pull

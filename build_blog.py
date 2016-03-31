@@ -10,7 +10,7 @@ import datetime
 
 def main(argv):
     posts_folder, output_folder = parse_arguments(argv)
-    parse_posts(posts_folder, output_folder)
+    build_blog(posts_folder, output_folder)
 
 
 def parse_arguments(argv):
@@ -68,11 +68,12 @@ def print_usage_instructions():
     print('\t-o, --output <directory>: The directory to output html to.')
 
 
-def parse_posts(posts_folder, output_folder):
+def build_blog(posts_folder, output_folder):
     """
-    Parses all posts in the posts folder, parses their content and outputs
-    generated html to the output folder. The posts have to have the file ending
-    .markdown or .md.
+    Goes through the posts folder, parses all posts and copies the rendered
+    html to the output folder. Posts must have the file ending .markdown
+    or .md. All non-post files will be copied to the output folder without
+    modification.
 
     :param posts_folder: The folder to read posts from. If this folder doesn't
                          exist the script will exit without doing anything.
