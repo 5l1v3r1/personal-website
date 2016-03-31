@@ -108,7 +108,7 @@ def build_blog(posts_folder, output_folder):
 
         render_template('blog_post', data, os.path.join(output_folder, post['url']))
 
-    render_template('blog_index', {'title': 'blog', 'posts': posts}, os.path.join(output_folder, 'index.html'))
+    render_template('blog_index', {'title': 'blog', 'posts': posts}, os.path.join(output_folder, 'blog.html'))
 
 
 def read_posts(posts_folder, output_folder):
