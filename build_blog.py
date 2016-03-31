@@ -6,11 +6,12 @@ import pystache
 import shutil
 import git
 import datetime
+import pathlib
 
 
 def main(argv):
     posts_folder, output_folder = parse_arguments(argv)
-    parse_posts(posts_folder, output_folder)
+    build_blog(posts_folder, output_folder)
 
 
 def parse_arguments(argv):
@@ -68,11 +69,12 @@ def print_usage_instructions():
     print('\t-o, --output <directory>: The directory to output html to.')
 
 
-def parse_posts(posts_folder, output_folder):
+def build_blog(posts_folder, output_folder):
     """
-    Parses all posts in the posts folder, parses their content and outputs
-    generated html to the output folder. The posts have to have the file ending
-    .markdown or .md.
+    Goes through the posts folder, parses all posts and copies the rendered
+    html to the output folder. Posts must have the file ending .markdown
+    or .md. All non-post files will be copied to the output folder without
+    modification.
 
     :param posts_folder: The folder to read posts from. If this folder doesn't
                          exist the script will exit without doing anything.
@@ -83,7 +85,14 @@ def parse_posts(posts_folder, output_folder):
         print('Error: Folder {} does not exist'.format(posts_folder))
         sys.exit(2)
 
-    posts = read_posts(posts_folder, output_folder)
+    posts_path = pathlib.Path(posts_folder)
+    markdown_files = posts_path.glob('**/*.markdown')
+
+    posts = []
+    for post_file in markdown_files:
+        post = parse_post(post_file)
+        posts.append(post)
+
     posts.sort(key=lambda post: post['date'], reverse=True)
 
     for i, post in enumerate(posts):
@@ -97,53 +106,55 @@ def parse_posts(posts_folder, output_folder):
         if not i == len(posts) - 1:
             data['prev'] = posts[i + 1]
 
-        render_template('blog_post', data, os.path.join(output_folder, 'posts'))
+        render_template('blog_post', data, os.path.join(output_folder, post['url']))
 
-    render_template('blog_index', {'title': 'blog', 'posts': posts}, output_folder)
+    render_template('blog_index', {'title': 'blog', 'posts': posts}, os.path.join(output_folder, 'blog.html'))
 
 
 def read_posts(posts_folder, output_folder):
     """
     Scans the posts folder. All non-markdown files and folders will be copied
     to the output folder without modification. Markdown files directly in the
-    posts folder will be parsed.
+    posts folder will be parsed. Files or folders that start with '_' will be
+    ignored.
 
     :param posts_folder: The folder to look for files in.
     :param output_folder: The folder to copy files to.
     :returns: A list of all posts found in the posts folder.
     """
-    repo = git.Repo(posts_folder)
     posts = []
+
     for dir_entry in os.scandir(posts_folder):
-        if not dir_entry.name.startswith('.') and dir_entry.name != 'drafts': # Ignore hidden files and folders. Will not work on Windows.
+        if not dir_entry.name.startswith('_') and not dir_entry.name.startswith('.'): # Ignore hidden files and folders. Will not work on Windows.
             if dir_entry.is_file():
                 filename, extension = os.path.splitext(dir_entry.name)
                 if extension == '.markdown' or extension == '.md':
-                    post = parse_post(dir_entry, repo)
+                    post = parse_post(dir_entry)
                     posts.append(post)
                 else:
+                    if not os.path.exists(output_folder):
+                        os.makedirs(output_folder)
+
                     shutil.copy(dir_entry.path, output_folder)
             elif dir_entry.is_dir():
-                shutil.copytree(dir_entry.path, os.path.join(output_folder, dir_entry.name))
+                posts.extend(read_posts(dir_entry.path, os.path.join(output_folder, dir_entry.name, '')))
 
     return posts
 
 
-def parse_post(dir_entry, repo):
+def parse_post(path):
     """
     Parses a post written in markdown with optional metadata from a file.
 
     :param dir_entry: A directory entry for the post file to parse.
     :returns: A dictionary representing a single post.
     """
-    f = open(dir_entry.path)
-
-    file_content = open(dir_entry.path).read()
+    file_content = path.open().read()
     segments = file_content.split('\n\n')
 
     metadata = dict()
     if not segments[0].startswith('# '):
-        # File didn't start with title -> There is metadata.
+        # File didn't start with title -> there is metadata.
         metadata = parse_metadata(segments[0])
         segments = segments[1:]
 
@@ -153,14 +164,16 @@ def parse_post(dir_entry, repo):
     first_paragraph = markdown(segments[1])
     content = markdown('\n\n'.join(segments[2:]))
 
-    latest_commit = next(repo.iter_commits(paths=dir_entry.name))
+    repo = git.Repo(path.parts[0])
+    latest_commit = next(repo.iter_commits(paths=path.name))
     date = datetime.date.fromtimestamp(latest_commit.authored_date)
 
     post = {
         'date': date,
         'title': title,
         'first_paragraph': first_paragraph,
-        'content': content
+        'content': content,
+        'url': str(path.with_suffix('.html'))
     }
     post.update(metadata)
 
@@ -191,25 +204,7 @@ def parse_metadata(block):
     return metadata
 
 
-def render_post(post, output_folder):
-    """
-    Renders a post.
-
-    :param post: The post to use when rendering the template.
-    :param output_folder: The folder to write the rendered file to.
-    """
-
-
-def render_index(posts, output_folder):
-    """
-    Renders an index file.
-
-    :param posts: The posts to use when rendering the template.
-    :param output_folder: The folder to write the rendered file to.
-    """
-
-
-def render_template(template, data, output_folder):
+def render_template(template, data, path):
     """
     Renders a template and writes it to a new html file.
 
@@ -217,14 +212,14 @@ def render_template(template, data, output_folder):
     :param data: The data to use when rendering.
     :param output_folder: The folder to write the new html file to.
     """
-    if not os.path.exists(output_folder):
-        os.makedirs(output_folder)
+    path = pathlib.Path(path)
+    if not path.parent.exists():
+        path.parent.mkdir(parents=True)
 
     renderer = pystache.Renderer(search_dirs='templates')
     body = renderer.render_name(template, data)
     html = renderer.render_name('main', {'body': body, 'title': data['title']})
-    path = os.path.join(output_folder, data['title'] + '.html')
-    open(path, 'w').write(html)
+    open(str(path), 'w').write(html)
 
 
 if __name__ == '__main__':
