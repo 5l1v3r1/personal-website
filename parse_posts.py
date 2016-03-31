@@ -137,13 +137,11 @@ def parse_post(dir_entry, repo):
         metadata = parse_metadata(segments[0])
         segments = segments[1:]
 
-    title = segments[0].replace('# ', '')
-    first_paragraph = segments[1]
-    content = '\n\n'.join(segments[2:])
-
     markdown = mistune.Markdown()
-    first_paragraph = markdown(first_paragraph)
-    content = markdown(content)
+
+    title = segments[0].replace('# ', '')
+    first_paragraph = markdown(segments[1])
+    content = markdown('\n\n'.join(segments[2:]))
 
     latest_commit = next(repo.iter_commits(paths=dir_entry.name))
     date = datetime.date.fromtimestamp(latest_commit.authored_date)
