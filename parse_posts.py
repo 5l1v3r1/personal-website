@@ -86,10 +86,20 @@ def parse_posts(posts_folder, output_folder):
     posts = read_posts(posts_folder, output_folder)
     posts.sort(key=lambda post: post['date'], reverse=True)
 
-    for post in posts:
-        render_post(post, output_folder)
+    for i, post in enumerate(posts):
+        data = {
+            'title': post['title'],
+            'post': post
+        }
 
-    render_index(posts, output_folder)
+        if not i == 0:
+            data['next'] = posts[i - 1]
+        if not i == len(posts) - 1:
+            data['prev'] = posts[i + 1]
+
+        render_template('blog_post', data, os.path.join(output_folder, 'posts'))
+
+    render_template('blog_index', {'title': 'blog', 'posts': posts}, output_folder)
 
 
 def read_posts(posts_folder, output_folder):
@@ -188,7 +198,6 @@ def render_post(post, output_folder):
     :param post: The post to use when rendering the template.
     :param output_folder: The folder to write the rendered file to.
     """
-    render_template('blog_post', {'title': post['title'], 'post': post}, os.path.join(output_folder, 'posts'))
 
 
 def render_index(posts, output_folder):
@@ -198,7 +207,6 @@ def render_index(posts, output_folder):
     :param posts: The posts to use when rendering the template.
     :param output_folder: The folder to write the rendered file to.
     """
-    render_template('blog_index', {'title': 'blog', 'posts': posts}, output_folder)
 
 
 def render_template(template, data, output_folder):

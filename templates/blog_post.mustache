@@ -10,6 +10,14 @@
     p {
         text-align: justify;
     }
+
+    .next {
+        float: right;
+    }
+
+    nav {
+        margin-bottom: 2rem;
+    }
 </style>
 
 <article>
@@ -19,4 +27,12 @@
         {{{first_paragraph}}}
         {{{content}}}
     {{/post}}
+    <nav>
+        {{#prev}}
+            <a href="{{title}}.html">&larr; {{title}}</a>
+        {{/prev}}
+        {{#next}}
+            <a class="next" href="{{title}}.html">{{title}} &rarr;</a>
+        {{/next}}
+    </nav>
 </article>
