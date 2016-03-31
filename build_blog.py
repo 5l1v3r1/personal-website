@@ -88,11 +88,7 @@ def build_blog(posts_folder, output_folder):
     posts_path = pathlib.Path(posts_folder)
     markdown_files = posts_path.glob('**/*.markdown')
 
-    posts = []
-    for post_file in markdown_files:
-        post = parse_post(post_file)
-        posts.append(post)
-
+    posts = [parse_post(post_file) for post_file in markdown_files]
     posts.sort(key=lambda post: post['date'], reverse=True)
 
     for i, post in enumerate(posts):
