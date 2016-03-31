@@ -133,14 +133,14 @@ def parse_post(path):
     latest_commit = next(repo.iter_commits(paths=path.name))
     date = datetime.date.fromtimestamp(latest_commit.authored_date)
 
-    post = {
+    post = metadata.copy()
+    post.update({
         'date': date,
         'title': title,
         'first_paragraph': first_paragraph,
         'content': content,
         'url': str(path.with_suffix('.html'))
-    }
-    post.update(metadata)
+    })
 
     return post
 
