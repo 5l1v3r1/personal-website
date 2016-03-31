@@ -112,24 +112,39 @@ def read_posts(posts_folder, output_folder):
     :param output_folder: The folder to copy files to.
     :returns: A list of all posts found in the posts folder.
     """
-    repo = git.Repo(posts_folder)
     posts = []
     for dir_entry in os.scandir(posts_folder):
         if not dir_entry.name.startswith('.') and dir_entry.name != 'drafts': # Ignore hidden files and folders. Will not work on Windows.
             if dir_entry.is_file():
                 filename, extension = os.path.splitext(dir_entry.name)
                 if extension == '.markdown' or extension == '.md':
-                    post = parse_post(dir_entry, repo)
+                    post = parse_post(dir_entry)
                     posts.append(post)
                 else:
+                    if not os.path.exists(output_folder):
+                        os.makedirs(output_folder)
+
                     shutil.copy(dir_entry.path, output_folder)
             elif dir_entry.is_dir():
-                shutil.copytree(dir_entry.path, os.path.join(output_folder, dir_entry.name))
+                posts.extend(read_posts(dir_entry.path, os.path.join(output_folder, dir_entry.name, '')))
 
     return posts
 
 
-def parse_post(dir_entry, repo):
+def get_root(path):
+    """
+    Returns the root folder of the specified path.
+
+    :param path: The path to get the root folder of.
+    :returns: The root folder of path.
+    """
+    split = os.path.split(path)
+    if split[0] == '':
+        return split[1]
+    return get_root(split[0])
+
+
+def parse_post(dir_entry):
     """
     Parses a post written in markdown with optional metadata from a file.
 
@@ -153,6 +168,7 @@ def parse_post(dir_entry, repo):
     first_paragraph = markdown(segments[1])
     content = markdown('\n\n'.join(segments[2:]))
 
+    repo = git.Repo(get_root(dir_entry.path))
     latest_commit = next(repo.iter_commits(paths=dir_entry.name))
     date = datetime.date.fromtimestamp(latest_commit.authored_date)
 
