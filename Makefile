@@ -7,7 +7,7 @@ build_site: clean copy_static
 	python build_blog.py -p posts/ -o output/
 
 fetch_posts:
-	cd posts/ && git reset --hard && git pull
+	cd posts/ && git reset --hard && git clean -fd && git pull
 
 copy_static:
 	cp -r static/* output/
