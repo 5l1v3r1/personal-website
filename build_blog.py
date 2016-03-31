@@ -171,11 +171,11 @@ def parse_metadata(block):
 
 def render_template(template, data, path):
     """
-    Renders a template and writes it to a new html file.
+    Renders a template with data and writes the result to a new file.
 
     :param template: The name of the template to use when rendering.
     :param data: The data to use when rendering.
-    :param output_folder: The folder to write the new html file to.
+    :param path: The path to write the rendered file to.
     """
     path = pathlib.Path(path)
     if not path.parent.exists():
