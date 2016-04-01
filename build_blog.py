@@ -1,6 +1,5 @@
 import sys
 import mistune
-import os
 import getopt
 import pystache
 import shutil
@@ -107,7 +106,7 @@ def build_blog(posts_folder, output_folder):
 
         render_template('blog_post', data, output_path / post['url'])
 
-    render_template('blog_index', {'title': 'blog', 'posts': posts}, output_path / 'blog.html')
+    render_template('blog_index', {'title': 'Blog', 'posts': posts}, output_path / 'blog.html')
 
 
 def parse_post(path):
