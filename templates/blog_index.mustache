@@ -19,6 +19,10 @@
     .post:last-child {
         margin-bottom: 2rem;
     }
+
+    .divider {
+        margin: 2rem 0;
+    }
 </style>
 
 {{#posts}}
@@ -26,8 +30,8 @@
         <h1><a href="/{{url}}">{{title}}</a></h1>
         <p class="date">{{date}}</p>
         {{{first_paragraph}}}
-        {{^last}}
-            <hr />
-        {{/last}}
     </section>
+    {{^last}}
+        <hr class="divider"/>
+    {{/last}}
 {{/posts}}
