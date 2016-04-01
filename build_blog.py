@@ -108,7 +108,7 @@ def build_blog(posts_folder, output_folder):
 
         render_template('blog_post', data, output_path / post['url'])
 
-    render_template('blog_index', {'title': 'Blog', 'posts': posts}, output_path / 'blog.html')
+    render_template('blog_index', {'blog': True, 'title': 'Blog', 'posts': posts}, output_path / 'blog.html')
 
 
 def parse_post(path):
@@ -187,7 +187,7 @@ def render_template(template, data, path):
 
     renderer = pystache.Renderer(search_dirs='templates')
     body = renderer.render_name(template, data)
-    html = renderer.render_name('main', {'body': body, 'title': data['title']})
+    html = renderer.render_name('main', {'body': body, 'data': data})
     path.write_text(html)
 
 
