@@ -86,9 +86,11 @@ def build_blog(posts_folder, output_folder):
         print('Error: Folder {} does not exist.'.format(posts_folder))
         sys.exit(2)
 
-    markdown_files = posts_path.glob('**/*.markdown')
+    files = list(posts_path.glob('**/*.markdown'))
+    # Ignore all files and folders that start with an underscore.
+    ignore = list(posts_path.glob('**/_*.markdown')) + list(posts_path.glob('**/_*/*.markdown'))
 
-    posts = [parse_post(post_file) for post_file in markdown_files]
+    posts = [parse_post(file) for file in files if not file in ignore]
     posts.sort(key=lambda post: post['date'], reverse=True)
 
     output_path = pathlib.Path(output_folder)
