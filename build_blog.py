@@ -13,7 +13,7 @@ def main(argv):
     posts_path = pathlib.Path(posts_folder)
     output_path = pathlib.Path(output_folder)
     build_blog(posts_path, output_path)
-    render_template('index', {'title': 'Home'}, output_path / 'index.html')
+    render_template('index', {'title': 'Home', 'index': True}, output_path / 'index.html')
 
 
 def parse_arguments(argv):
