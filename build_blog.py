@@ -96,7 +96,8 @@ def build_blog(posts_path, output_path):
     for i, post in enumerate(posts):
         data = {
             'title': post['title'],
-            'post': post
+            'post': post,
+            'blog': True
         }
 
         if not i == 0:
