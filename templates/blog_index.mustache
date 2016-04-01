@@ -22,6 +22,8 @@
         <h1><a href="/{{url}}">{{title}}</a></h1>
         <p class="date">{{date}}</p>
         {{{first_paragraph}}}
-        <hr />
+        {{^last}}
+            <hr />
+        {{/last}}
     </section>
 {{/posts}}

@@ -107,6 +107,8 @@ def build_blog(posts_path, output_path):
 
         render_template('blog_post', data, output_path / post['url'])
 
+    posts[-1]['last'] = True
+
     render_template('blog_index', {'blog': True, 'title': 'Blog', 'posts': posts}, output_path / 'blog.html')
 
 
