@@ -71,9 +71,8 @@ def print_usage_instructions():
 def build_blog(posts_folder, output_folder):
     """
     Goes through the posts folder, parses all posts and copies the rendered
-    html to the output folder. Posts must have the file ending .markdown
-    or .md. All non-post files will be copied to the output folder without
-    modification.
+    html to the output folder. Posts must have the file ending .markdown.
+    All non-post files will be copied to the output folder without modification.
 
     :param posts_folder: The folder to read posts from. If this folder doesn't
                          exist the script will exit without doing anything.
