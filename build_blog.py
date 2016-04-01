@@ -81,15 +81,18 @@ def build_blog(posts_folder, output_folder):
     :param output_folder: The folder to output html to. Will be created if it
                           doesn't exist.
     """
-    if not os.path.exists(posts_folder):
-        print('Error: Folder {} does not exist'.format(posts_folder))
+    posts_path = pathlib.Path(posts_folder)
+
+    if not posts_path.exists():
+        print('Error: Folder {} does not exist.'.format(posts_folder))
         sys.exit(2)
 
-    posts_path = pathlib.Path(posts_folder)
     markdown_files = posts_path.glob('**/*.markdown')
 
     posts = [parse_post(post_file) for post_file in markdown_files]
     posts.sort(key=lambda post: post['date'], reverse=True)
+
+    output_path = pathlib.Path(output_folder)
 
     for i, post in enumerate(posts):
         data = {
@@ -102,9 +105,9 @@ def build_blog(posts_folder, output_folder):
         if not i == len(posts) - 1:
             data['prev'] = posts[i + 1]
 
-        render_template('blog_post', data, os.path.join(output_folder, post['url']))
+        render_template('blog_post', data, output_path / post['url'])
 
-    render_template('blog_index', {'title': 'blog', 'posts': posts}, os.path.join(output_folder, 'blog.html'))
+    render_template('blog_index', {'title': 'blog', 'posts': posts}, output_path / 'blog.html')
 
 
 def parse_post(path):
