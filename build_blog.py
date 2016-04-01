@@ -118,7 +118,7 @@ def parse_post(path):
     :param dir_entry: A directory entry for the post file to parse.
     :returns: A dictionary representing a single post.
     """
-    file_content = path.open().read()
+    file_content = path.read_text()
     segments = file_content.split('\n\n')
 
     metadata = dict()
@@ -188,7 +188,7 @@ def render_template(template, data, path):
     renderer = pystache.Renderer(search_dirs='templates')
     body = renderer.render_name(template, data)
     html = renderer.render_name('main', {'body': body, 'title': data['title']})
-    open(str(path), 'w').write(html)
+    path.write_text(html)
 
 
 if __name__ == '__main__':
