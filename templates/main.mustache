@@ -8,17 +8,34 @@
             @import url(https://fonts.googleapis.com/css?family=Droid+Serif);
 
             body {
-                margin: 0 auto;
                 font-family: 'Droid Serif', serif;
-                width: 35rem;
             }
 
-            .date {
-                color: #545454;
+            .wrapper {
+                width: 35rem;
+                margin: 0 auto;
+            }
+
+            .main-nav {
+                display: flex;
+            }
+
+            .main-nav > div {
+                padding: 0.5em 1em;
             }
         </style>
     </head>
     <body>
-        {{{body}}}
+        <nav class="main-nav">
+            <div>
+                Hello
+            </div>
+            <div>
+                Goodbye
+            </div>
+        </nav>
+        <div class="wrapper">
+            {{{body}}}
+        </div>
     </body>
 </html>

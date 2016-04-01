@@ -1,35 +1,40 @@
 <style scoped>
-    h1 {
+    .post > header > h1 {
         margin-bottom: 0;
     }
 
-    h1, .date {
+    .post > header {
         text-align: center;
     }
 
-    p {
+    .post > p {
         text-align: justify;
     }
 
-    .next {
-        float: right;
+    .post .date {
+        color: #545454;
     }
 
-    nav {
+    .prev-next {
         margin-bottom: 2rem;
+    }
+
+    .prev-next > .next {
+        float: right;
     }
 </style>
 
-
-<article>
-    {{#post}}
-        <h1>{{title}}</h1>
-        <p class="date">{{date}}</p>
+{{#post}}
+    <article class="post">
+        <header>
+            <h1>{{title}}</h1>
+            <p class="date">{{date}}</p>
+        </header>
         {{{first_paragraph}}}
         {{{content}}}
-    {{/post}}
-</article>
-<nav>
+    </article>
+{{/post}}
+<nav class="prev-next">
     {{#prev}}
         <a href="/{{url}}">&larr; {{title}}</a>
     {{/prev}}
