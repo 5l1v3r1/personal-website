@@ -144,7 +144,7 @@ def parse_post(path):
         'title': title,
         'first_paragraph': first_paragraph,
         'content': content,
-        'url': str(path.with_suffix('.html'))
+        'url': str(path.with_suffix('.html')).lower().replace(' ', '_')
     })
 
     return post
