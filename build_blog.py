@@ -10,7 +10,10 @@ import pathlib
 
 def main(argv):
     posts_folder, output_folder = parse_arguments(argv)
-    build_blog(posts_folder, output_folder)
+    posts_path = pathlib.Path(posts_folder)
+    output_path = pathlib.Path(output_folder)
+    build_blog(posts_path, output_path)
+    render_template('index', {'title': 'Home', 'index': True}, output_path / 'index.html')
 
 
 def parse_arguments(argv):
@@ -68,22 +71,19 @@ def print_usage_instructions():
     print('\t-o, --output <directory>: The directory to output html to.')
 
 
-def build_blog(posts_folder, output_folder):
+def build_blog(posts_path, output_path):
     """
     Goes through the posts folder, parses all posts and copies the rendered
-    html to the output folder. Posts must have the file ending .markdown
-    or .md. All non-post files will be copied to the output folder without
-    modification.
+    html to the output folder. Posts must have the file ending .markdown.
+    All non-post files will be copied to the output folder without modification.
 
-    :param posts_folder: The folder to read posts from. If this folder doesn't
+    :param posts_path: The folder to read posts from. If this folder doesn't
                          exist the script will exit without doing anything.
-    :param output_folder: The folder to output html to. Will be created if it
+    :param output_path: The folder to output html to. Will be created if it
                           doesn't exist.
     """
-    posts_path = pathlib.Path(posts_folder)
-
     if not posts_path.exists():
-        print('Error: Folder {} does not exist.'.format(posts_folder))
+        print('Error: Folder {} does not exist.'.format(str(posts_path)))
         sys.exit(2)
 
     files = list(posts_path.glob('**/*.markdown'))
@@ -93,12 +93,11 @@ def build_blog(posts_folder, output_folder):
     posts = [parse_post(file) for file in files if not file in ignore]
     posts.sort(key=lambda post: post['date'], reverse=True)
 
-    output_path = pathlib.Path(output_folder)
-
     for i, post in enumerate(posts):
         data = {
             'title': post['title'],
-            'post': post
+            'post': post,
+            'blog': True
         }
 
         if not i == 0:
@@ -108,7 +107,9 @@ def build_blog(posts_folder, output_folder):
 
         render_template('blog_post', data, output_path / post['url'])
 
-    render_template('blog_index', {'title': 'Blog', 'posts': posts}, output_path / 'blog.html')
+    posts[-1]['last'] = True
+
+    render_template('blog_index', {'blog': True, 'title': 'Blog', 'posts': posts}, output_path / 'blog.html')
 
 
 def parse_post(path):
@@ -143,7 +144,7 @@ def parse_post(path):
         'title': title,
         'first_paragraph': first_paragraph,
         'content': content,
-        'url': str(path.with_suffix('.html'))
+        'url': str(path.with_suffix('.html')).lower().replace(' ', '_')
     })
 
     return post
@@ -187,7 +188,7 @@ def render_template(template, data, path):
 
     renderer = pystache.Renderer(search_dirs='templates')
     body = renderer.render_name(template, data)
-    html = renderer.render_name('main', {'body': body, 'title': data['title']})
+    html = renderer.render_name('main', {'body': body, 'data': data})
     path.write_text(html)
 
 

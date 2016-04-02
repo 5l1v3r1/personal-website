@@ -1,15 +1,11 @@
 <style scoped>
-    .blog-header {
-        text-align: center;
-    }
-
     .post > h1 {
         margin-bottom: 0;
     }
 
     .post > h1 > a {
         color: inherit;
-        text-decoration: none;
+        border-bottom: none;
     }
 
     .post > p {
@@ -19,16 +15,23 @@
     .post .date {
         color: #545454;
     }
+
+    .post:last-child {
+        margin-bottom: 2rem;
+    }
+
+    .divider {
+        margin: 2rem 0;
+    }
 </style>
 
-<header class="blog-header">
-    <h1>Mats Högberg</h1>
-</header>
 {{#posts}}
     <section class="post">
         <h1><a href="/{{url}}">{{title}}</a></h1>
         <p class="date">{{date}}</p>
         {{{first_paragraph}}}
-        <hr />
     </section>
+    {{^last}}
+        <hr class="divider"/>
+    {{/last}}
 {{/posts}}

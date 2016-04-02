@@ -2,13 +2,36 @@
 
 <html>
     <head>
-        <title>mhgbrg - {{title}}</title>
+        <title>mhgbrg - {{data.title}}</title>
         <meta charset="utf-8" />
         <style>
             @import url(https://fonts.googleapis.com/css?family=Droid+Serif);
+            @import url(https://fonts.googleapis.com/css?family=Open+Sans);
 
             body {
                 font-family: 'Droid Serif', serif;
+            }
+
+            a {
+                color: #d02e8f;
+                text-decoration: none;
+                border-bottom: 1px solid #d02e8f;
+            }
+
+            a:hover {
+                color: #b40b70;
+                border-bottom: 1px solid #b40b70;
+            }
+
+            a:active {
+                color: #870051;
+                border-bottom: 1px solid #870051;
+            }
+
+            hr {
+                height: 0;
+                border: 0;
+                border-bottom: 1px solid #cbcbcb;
             }
 
             .wrapper {
@@ -18,20 +41,34 @@
 
             .main-nav {
                 display: flex;
+                margin-left: 1em;
+                margin-top: 1em;
+                font-family: 'Open Sans', sans-serif;
+                font-size: 0.9em;
             }
 
             .main-nav > div {
-                padding: 0.5em 1em;
+                padding: 0.5em 0.5em;
+            }
+
+            .main-nav a {
+                border-bottom: none;
+            }
+
+            .main-nav a.current {
+                color: black;
+                border-bottom: 2px solid black;
+                padding-bottom: 3px;
             }
         </style>
     </head>
     <body>
         <nav class="main-nav">
             <div>
-                Hello
+                <a href="/index.html" {{#data.index}}class="current"{{/data.index}}>Home</a>
             </div>
             <div>
-                Goodbye
+                <a href="/blog.html" {{#data.blog}}class="current"{{/data.blog}}>Blog</a>
             </div>
         </nav>
         <div class="wrapper">
