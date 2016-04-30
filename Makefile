@@ -18,3 +18,6 @@ clean:
 
 server:
 	cd output/ && python3 -m http.server
+
+open:
+	open 'http://localhost:8000'
