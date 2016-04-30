@@ -16,7 +16,7 @@ copy_static:
 clean:
 	rm -rf output/*
 
-server:
+serve:
 	cd output/ && python3 -m http.server
 
 open:
