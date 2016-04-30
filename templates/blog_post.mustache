@@ -15,6 +15,17 @@
         color: #545454;
     }
 
+    .post h2, .post h3, .post h4, .post h5, .post h6 {
+        position: relative;
+    }
+
+    .post h2::before, .post h3::before, .post h4::before, .post h5::before, .post h6::before {
+        content: "#";
+        position: absolute;
+        left: -20px;
+        color: #ccc;
+    }
+
     .prev-next {
         display: flex;
         justify-content: space-between;
