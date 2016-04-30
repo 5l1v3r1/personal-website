@@ -135,8 +135,12 @@ def parse_post(path):
     content = markdown('\n\n'.join(segments[2:]))
 
     repo = git.Repo(path.parts[0])
-    latest_commit = next(repo.iter_commits(paths=path.name))
-    date = datetime.date.fromtimestamp(latest_commit.authored_date)
+
+    try:
+        latest_commit = next(repo.iter_commits(paths=path.name))
+        date = datetime.date.fromtimestamp(latest_commit.authored_date)
+    except StopIteration:
+        date = datetime.date.today()
 
     post = metadata.copy()
     post.update({
