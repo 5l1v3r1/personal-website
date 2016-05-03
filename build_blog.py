@@ -6,6 +6,7 @@ import shutil
 import git
 import datetime
 import pathlib
+import re
 
 
 def main(argv):
@@ -134,9 +135,28 @@ def parse_post(path):
     first_paragraph = markdown(segments[1])
     content = markdown('\n\n'.join(segments[2:]))
 
+    # This regex matches all headings and captures their level and their text.
+    regex = re.compile('<h(.)>(.*)<\/h\\1>')
+    for match in re.finditer(regex, content):
+        h_number = match.group(1)
+        heading = match.group(2)
+        anchor = '{0}'.format(heading.lower().replace(' ', '_'))
+
+        formatted_heading = '<h{0}><a name="{1}" href="#{1}">{2}</a></h{0}>'.format(h_number, anchor, heading)
+
+        content = content.replace(match.group(0), formatted_heading)
+
+    # A simpler way to add links to headings. Though with this method you can't
+    # change the string captured by group 2 from what I can tell.
+    # content = regex.sub('<h\\1><a href="#\\2">\\2</a></h\\1>', content)
+
     repo = git.Repo(path.parts[0])
-    latest_commit = next(repo.iter_commits(paths=path.name))
-    date = datetime.date.fromtimestamp(latest_commit.authored_date)
+
+    try:
+        latest_commit = next(repo.iter_commits(paths=path.name))
+        date = datetime.date.fromtimestamp(latest_commit.authored_date)
+    except StopIteration:
+        date = datetime.date.today()
 
     post = metadata.copy()
     post.update({

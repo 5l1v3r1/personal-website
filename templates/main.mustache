@@ -4,12 +4,19 @@
     <head>
         <title>mhgbrg - {{data.title}}</title>
         <meta charset="utf-8" />
+        <link rel="stylesheet" href="/prism/prism.css" />
         <style>
             @import url(https://fonts.googleapis.com/css?family=Droid+Serif);
-            @import url(https://fonts.googleapis.com/css?family=Open+Sans);
+            @import url(https://fonts.googleapis.com/css?family=Roboto);
 
             body {
                 font-family: 'Droid Serif', serif;
+                font-size: 1.1em;
+            }
+
+            h1, h2, h3, h4, h5, h6 {
+                font-family: 'Roboto', sans-serif;
+                letter-spacing: 0.02em;
             }
 
             a {
@@ -35,7 +42,7 @@
             }
 
             .wrapper {
-                width: 35rem;
+                width: 40rem;
                 margin: 0 auto;
             }
 
@@ -60,6 +67,13 @@
                 border-bottom: 2px solid black;
                 padding-bottom: 3px;
             }
+
+            pre {
+                background: none !important;
+                padding: 0 0 0 18px !important;
+                margin: 1em 0 1em -20px !important;
+                border-left: solid 2px #ccc;
+            }
         </style>
     </head>
     <body>
@@ -74,5 +88,6 @@
         <div class="wrapper">
             {{{body}}}
         </div>
+        <script src="/prism/prism.js"></script>
     </body>
 </html>

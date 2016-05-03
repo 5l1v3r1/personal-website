@@ -7,12 +7,38 @@
         text-align: center;
     }
 
-    .post > p {
+    .post > p, .post > ul, .post > ol {
         text-align: justify;
+        line-height: 1.58;
+        /*font-size: 1.1em;*/
     }
 
     .post .date {
         color: #545454;
+    }
+
+    .post h2, .post h3, .post h4, .post h5, .post h6 {
+        position: relative;
+    }
+
+    .post h2 > a, .post h3 > a, .post h4 > a, .post h5 > a, .post h6 > a {
+        border: none;
+        color: black;
+    }
+
+    .post h2::before, .post h3::before, .post h4::before, .post h5::before, .post h6::before {
+        content: "#";
+        position: absolute;
+        left: -20px;
+        color: #ccc;
+    }
+
+    .post h2:hover::before, .post h3:hover::before, .post h4:hover::before, .post h5:hover::before, .post h6:hover::before {
+        color: #b40b70;
+    }
+
+    .post h2:active::before, .post h3:active::before, .post h4:active::before, .post h5:active::before, .post h6:active::before {
+        color: #870051;
     }
 
     .prev-next {
