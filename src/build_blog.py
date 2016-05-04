@@ -91,7 +91,7 @@ def build_blog(posts_path, output_path):
     # Ignore all files and folders that start with an underscore.
     ignore = list(posts_path.glob('**/_*.markdown')) + list(posts_path.glob('**/_*/*.markdown'))
 
-    posts = [parse_post(file) for file in files if not file in ignore]
+    posts = [parse_post(file, posts_path) for file in files if not file in ignore]
     posts.sort(key=lambda post: post['date'], reverse=True)
 
     for i, post in enumerate(posts):
@@ -106,21 +106,21 @@ def build_blog(posts_path, output_path):
         if not i == len(posts) - 1:
             data['prev'] = posts[i + 1]
 
-        render_template('blog_post', data, output_path / post['url'])
+        render_template('blog_post', data, output_path / 'posts' / post['url'])
 
     posts[-1]['last'] = True
 
     render_template('blog_index', {'blog': True, 'title': 'Blog', 'posts': posts}, output_path / 'blog.html')
 
 
-def parse_post(path):
+def parse_post(full_path, root_path):
     """
     Parses a post written in markdown with optional metadata from a file.
 
     :param dir_entry: A directory entry for the post file to parse.
     :returns: A dictionary representing a single post.
     """
-    file_content = path.read_text()
+    file_content = full_path.read_text()
     segments = file_content.split('\n\n')
 
     metadata = dict()
@@ -150,13 +150,15 @@ def parse_post(path):
     # change the string captured by group 2 from what I can tell.
     # content = regex.sub('<h\\1><a href="#\\2">\\2</a></h\\1>', content)
 
-    repo = git.Repo(path.parts[0])
+    repo = git.Repo(root_path.parts[0])
 
     try:
-        latest_commit = next(repo.iter_commits(paths=path.name))
+        latest_commit = next(repo.iter_commits(paths=full_path.name))
         date = datetime.date.fromtimestamp(latest_commit.authored_date)
     except StopIteration:
         date = datetime.date.today()
+
+    url = str(full_path.relative_to(root_path).with_suffix('.html')).lower().replace(' ', '_')
 
     post = metadata.copy()
     post.update({
@@ -164,7 +166,7 @@ def parse_post(path):
         'title': title,
         'first_paragraph': first_paragraph,
         'content': content,
-        'url': str(path.with_suffix('.html')).lower().replace(' ', '_')
+        'url': url
     })
 
     return post
