@@ -118,7 +118,7 @@ def build_blog(posts_path, output_path):
         'title': 'Blog',
         'posts': posts,
         'url_prefix': url_prefix
-    }, output_path / 'blog.html')
+    }, output_path / 'blog' / 'index.html')
 
 
 def parse_post(full_path, root_path):
