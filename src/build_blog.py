@@ -158,7 +158,7 @@ def parse_post(full_path, root_path):
     # change the string captured by group 2 from what I can tell.
     # content = regex.sub('<h\\1><a href="#\\2">\\2</a></h\\1>', content)
 
-    repo = git.Repo(root_path.parts[0])
+    repo = git.Repo(str(root_path))
 
     try:
         latest_commit = next(repo.iter_commits(paths=full_path.name))
