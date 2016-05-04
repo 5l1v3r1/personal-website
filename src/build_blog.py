@@ -109,7 +109,7 @@ def build_blog(posts_path, output_path):
         if not i == len(posts) - 1:
             data['prev'] = posts[i + 1]
 
-        render_template('blog_post', data, output_path / 'posts' / post['url'] / 'index.html')
+        render_template('blog_post', data, output_path / url_prefix / post['url'] / 'index.html')
 
     posts[-1]['last'] = True
 
