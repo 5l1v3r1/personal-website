@@ -63,9 +63,9 @@
 {{/post}}
 <nav class="prev-next">
     {{#prev}}
-        <a href="/{{url}}">&larr; {{title}}</a>
+        <a href="/{{url_prefix}}/{{url}}">&larr; {{title}}</a>
     {{/prev}}
     {{#next}}
-        <a class="next" href="/{{url}}">{{title}} &rarr;</a>
+        <a class="next" href="/{{url_prefix}}/{{url}}">{{title}} &rarr;</a>
     {{/next}}
 </nav>

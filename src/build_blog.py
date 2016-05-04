@@ -94,10 +94,13 @@ def build_blog(posts_path, output_path):
     posts = [parse_post(file, posts_path) for file in files if not file in ignore]
     posts.sort(key=lambda post: post['date'], reverse=True)
 
+    url_prefix = 'posts'
+
     for i, post in enumerate(posts):
         data = {
             'title': post['title'],
             'post': post,
+            'url_prefix': url_prefix,
             'blog': True
         }
 
@@ -110,7 +113,12 @@ def build_blog(posts_path, output_path):
 
     posts[-1]['last'] = True
 
-    render_template('blog_index', {'blog': True, 'title': 'Blog', 'posts': posts}, output_path / 'blog.html')
+    render_template('blog_index', {
+        'blog': True,
+        'title': 'Blog',
+        'posts': posts,
+        'url_prefix': url_prefix
+    }, output_path / 'blog.html')
 
 
 def parse_post(full_path, root_path):
