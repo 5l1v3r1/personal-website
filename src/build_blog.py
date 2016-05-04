@@ -109,7 +109,7 @@ def build_blog(posts_path, output_path):
         if not i == len(posts) - 1:
             data['prev'] = posts[i + 1]
 
-        render_template('blog_post', data, output_path / 'posts' / post['url'])
+        render_template('blog_post', data, output_path / url_prefix / post['url'] / 'index.html')
 
     posts[-1]['last'] = True
 
@@ -118,7 +118,7 @@ def build_blog(posts_path, output_path):
         'title': 'Blog',
         'posts': posts,
         'url_prefix': url_prefix
-    }, output_path / 'blog.html')
+    }, output_path / 'blog' / 'index.html')
 
 
 def parse_post(full_path, root_path):
@@ -166,7 +166,7 @@ def parse_post(full_path, root_path):
     except StopIteration:
         date = datetime.date.today()
 
-    url = str(full_path.relative_to(root_path).with_suffix('.html')).lower().replace(' ', '_')
+    url = str(full_path.relative_to(root_path).with_suffix('')).lower().replace(' ', '_')
 
     post = metadata.copy()
     post.update({
