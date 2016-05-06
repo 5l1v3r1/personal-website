@@ -48,6 +48,10 @@
     border: none;
 }
 
+.post .tags > a:last-child {
+    margin-right: 0;
+}
+
 .post .tags > a:hover {
     background-color: #ddd;
 }
