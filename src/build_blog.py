@@ -94,13 +94,15 @@ def build_blog(posts_path, output_path):
     posts = [parse_post(file, posts_path) for file in files if not file in ignore]
     posts.sort(key=lambda post: post['date'], reverse=True)
 
-    url_prefix = 'posts'
+    blog_url_prefix = 'blog'
+    posts_url_prefix = 'posts'
+    tags_url_prefix = 'tags'
 
     for i, post in enumerate(posts):
         data = {
             'title': post['title'],
             'post': post,
-            'url_prefix': url_prefix,
+            'url_prefix': '/'.join([blog_url_prefix, posts_url_prefix]),
             'blog': True
         }
 
@@ -109,7 +111,18 @@ def build_blog(posts_path, output_path):
         if not i == len(posts) - 1:
             data['prev'] = posts[i + 1]
 
-        render_template('blog_post', data, output_path / url_prefix / post['url'] / 'index.html')
+        render_template('blog_post', data, output_path / blog_url_prefix / posts_url_prefix / post['url'] / 'index.html')
+
+        try:
+            tags = data['post']['tags']
+            for tag in tags:
+                if tag not in all_tags:
+                    all_tags[tag] = []
+                all_tags[tag].append(post)
+
+        except KeyError:
+            # Post has no tags.
+            pass
 
     posts[-1]['last'] = True
 
@@ -117,8 +130,8 @@ def build_blog(posts_path, output_path):
         'blog': True,
         'title': 'Blog',
         'posts': posts,
-        'url_prefix': url_prefix
-    }, output_path / 'blog' / 'index.html')
+        'url_prefix': '/'.join([blog_url_prefix, posts_url_prefix])
+    }, output_path / blog_url_prefix / 'index.html')
 
 
 def parse_post(full_path, root_path):
