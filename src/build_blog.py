@@ -128,8 +128,6 @@ def build_blog(posts_path, output_path):
             # Post has no tags.
             pass
 
-    posts[-1]['last'] = True
-
     render_template('blog_index', {
         'blog': True,
         'title': 'Blog',
