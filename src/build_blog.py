@@ -104,7 +104,9 @@ def build_blog(posts_path, output_path):
         data = {
             'title': post['title'],
             'post': post,
-            'url_prefix': '/'.join([blog_url_prefix, posts_url_prefix]),
+            'blog_url_prefix': blog_url_prefix,
+            'posts_url_prefix': posts_url_prefix,
+            'tags_url_prefix': tags_url_prefix,
             'blog': True
         }
 
@@ -132,7 +134,9 @@ def build_blog(posts_path, output_path):
         'blog': True,
         'title': 'Blog',
         'posts': posts,
-        'url_prefix': '/'.join([blog_url_prefix, posts_url_prefix])
+        'blog_url_prefix': blog_url_prefix,
+        'posts_url_prefix': posts_url_prefix,
+        'tags_url_prefix': tags_url_prefix
     }, output_path / blog_url_prefix / 'index.html')
 
     for (tag, posts) in all_tags.items():
@@ -140,7 +144,9 @@ def build_blog(posts_path, output_path):
             'blog': True,
             'title': tag,
             'posts': posts,
-            'url_prefix': '/'.join([blog_url_prefix, tags_url_prefix])
+            'blog_url_prefix': blog_url_prefix,
+            'posts_url_prefix': posts_url_prefix,
+            'tags_url_prefix': tags_url_prefix,
         }, output_path / blog_url_prefix / tags_url_prefix / tag / 'index.html')
 
 
