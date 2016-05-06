@@ -1,3 +1,4 @@
 mistune==0.7.2
 pystache==0.5.4
 GitPython==1.0.2
+docopt==0.6.2
