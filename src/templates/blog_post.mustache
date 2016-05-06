@@ -23,7 +23,7 @@
             <p class="date">{{date}}</p>
             <div class="tags">
                 {{#tags}}
-                    <a href="/{{blog_url_prefix}}/{{tags_url_prefix}}/{{.}}">#{{.}}</a>
+                    <a href="/blog/tags/{{.}}">#{{.}}</a>
                 {{/tags}}
             </div>
         </header>
@@ -34,9 +34,9 @@
 {{/post}}
 <nav class="prev-next">
     {{#prev}}
-        <a href="/{{blog_url_prefix}}/{{posts_url_prefix}}/{{url}}">&larr; {{title}}</a>
+        <a href="/blog/posts/{{url}}">&larr; {{title}}</a>
     {{/prev}}
     {{#next}}
-        <a class="next" href="/{{blog_url_prefix}}/{{posts_url_prefix}}/{{url}}">{{title}} &rarr;</a>
+        <a class="next" href="/blog/posts/{{url}}">{{title}} &rarr;</a>
     {{/next}}
 </nav>

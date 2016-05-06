@@ -14,12 +14,12 @@
 
 {{#posts}}
     <section class="post">
-        <h1><a href="/{{blog_url_prefix}}/{{posts_url_prefix}}/{{url}}">{{title}}</a></h1>
+        <h1><a href="/blog/posts/{{url}}">{{title}}</a></h1>
         <p class="date">{{date}}</p>
         {{{first_paragraph}}}
         <div class="tags">
             {{#tags}}
-                <a href="/{{blog_url_prefix}}/{{tags_url_prefix}}/{{.}}">#{{.}}</a>
+                <a href="/blog/tags/{{.}}">#{{.}}</a>
             {{/tags}}
         </div>
     </section>

@@ -94,19 +94,12 @@ def build_blog(posts_path, output_path):
     posts = [parse_post(file, posts_path) for file in files if not file in ignore]
     posts.sort(key=lambda post: post['date'], reverse=True)
 
-    blog_url_prefix = 'blog'
-    posts_url_prefix = 'posts'
-    tags_url_prefix = 'tags'
-
     all_tags = {}
 
     for i, post in enumerate(posts):
         data = {
             'title': post['title'],
             'post': post,
-            'blog_url_prefix': blog_url_prefix,
-            'posts_url_prefix': posts_url_prefix,
-            'tags_url_prefix': tags_url_prefix,
             'blog': True
         }
 
@@ -115,7 +108,7 @@ def build_blog(posts_path, output_path):
         if not i == len(posts) - 1:
             data['prev'] = posts[i + 1]
 
-        render_template('blog_post', data, output_path / blog_url_prefix / posts_url_prefix / post['url'] / 'index.html')
+        render_template('blog_post', data, output_path / 'blog' / 'posts' / post['url'] / 'index.html')
 
         try:
             tags = data['post']['tags']
@@ -131,21 +124,15 @@ def build_blog(posts_path, output_path):
     render_template('blog_index', {
         'blog': True,
         'title': 'Blog',
-        'posts': posts,
-        'blog_url_prefix': blog_url_prefix,
-        'posts_url_prefix': posts_url_prefix,
-        'tags_url_prefix': tags_url_prefix
-    }, output_path / blog_url_prefix / 'index.html')
+        'posts': posts
+    }, output_path / 'blog' / 'index.html')
 
     for (tag, posts) in all_tags.items():
         render_template('blog_index', {
             'blog': True,
             'title': tag,
-            'posts': posts,
-            'blog_url_prefix': blog_url_prefix,
-            'posts_url_prefix': posts_url_prefix,
-            'tags_url_prefix': tags_url_prefix,
-        }, output_path / blog_url_prefix / tags_url_prefix / tag / 'index.html')
+            'posts': posts
+        }, output_path / 'blog' / 'tags' / tag / 'index.html')
 
 
 def parse_post(full_path, root_path):
