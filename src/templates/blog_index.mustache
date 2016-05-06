@@ -46,6 +46,10 @@
     .tags > a:active {
         background-color: #ccc;
     }
+
+    .divider:last-child {
+        display: none;
+    }
 </style>
 
 {{#posts}}
@@ -59,7 +63,5 @@
             {{/tags}}
         </div>
     </section>
-    {{^last}}
-        <hr class="divider"/>
-    {{/last}}
+    <hr class="divider"/>
 {{/posts}}
