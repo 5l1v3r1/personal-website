@@ -7,69 +7,30 @@ import git
 import datetime
 import pathlib
 import re
+import docopt
 
 
 def main(argv):
-    posts_folder, output_folder = parse_arguments(argv)
+    docopt_str = """
+Usage:
+    build_blog.py -p <folder> | --posts <folder> -o <folder> | --out <folder>
+    build_blog.py -h | --help
+
+Options:
+    -h --help                      Show this screen.
+    -p <folder>, --posts <folder>  Specify posts folder.
+    -o <folder>, --out <folder>    Specify output folder.
+"""
+    opt = docopt.docopt(docopt_str, argv=argv)
+
+    posts_folder = opt['--posts']
+    output_folder = opt['--out']
+
     posts_path = pathlib.Path(posts_folder)
     output_path = pathlib.Path(output_folder)
     build_blog(posts_path, output_path)
+
     render_template('index', {'title': 'Home', 'index': True}, output_path / 'index.html')
-
-
-def parse_arguments(argv):
-    """
-    Parses the command line arguments passed to the program. The allowed flags
-    are:
-        -h, --help: Shows the usage instructions of the program.
-        -p, --posts <directory>: The directory to read posts from.
-        -o, --output <directory>: The directory to output html to.
-
-    If the arguments don't match the specification the usage instructions
-    for the program is shown.
-
-    :param argv: A list of command line arguments.
-    :return: A folder to read posts from and a folder to output html to.
-    """
-    try:
-        opts, args = getopt.getopt(argv, 'hp:o:', ['help', 'posts=', 'output='])
-    except getopt.GetoptError:
-        invalid_arguments()
-
-    posts = ''
-    output = ''
-
-    for opt, arg in opts:
-        if opt in ('-h', '--help'):
-            print_usage_instructions()
-            sys.exit()
-        elif opt in ('-p', '--posts'):
-            posts = arg
-        elif opt in ('-o', '--output'):
-            output = arg
-
-    if posts == '' or output == '':
-        invalid_arguments()
-
-    return posts, output
-
-
-def invalid_arguments():
-    """
-    Prints the usage instructions for the program and exits with error code 2.
-    """
-    print_usage_instructions()
-    sys.exit(2)  # Exit code 2 = command line syntax error
-
-
-def print_usage_instructions():
-    """
-    Prints the usage instructions for the program.
-    """
-    print('parse_posts.py usage:\n')
-    print('\t-h, --help: Shows the usage instructions of the program')
-    print('\t-p, --posts <directory>: The directory to read posts from.')
-    print('\t-o, --output <directory>: The directory to output html to.')
 
 
 def build_blog(posts_path, output_path):
