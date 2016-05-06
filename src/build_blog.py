@@ -180,7 +180,7 @@ def parse_post(full_path, root_path):
     except StopIteration:
         date = datetime.date.today()
 
-    url = str(full_path.relative_to(root_path).with_suffix('')).lower().replace(' ', '_')
+    url = full_path.with_suffix('').name.lower().replace(' ', '_')
 
     post = metadata.copy()
     post.update({
