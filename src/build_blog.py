@@ -98,6 +98,8 @@ def build_blog(posts_path, output_path):
     posts_url_prefix = 'posts'
     tags_url_prefix = 'tags'
 
+    all_tags = {}
+
     for i, post in enumerate(posts):
         data = {
             'title': post['title'],
@@ -132,6 +134,14 @@ def build_blog(posts_path, output_path):
         'posts': posts,
         'url_prefix': '/'.join([blog_url_prefix, posts_url_prefix])
     }, output_path / blog_url_prefix / 'index.html')
+
+    for (tag, posts) in all_tags.items():
+        render_template('blog_index', {
+            'blog': True,
+            'title': tag,
+            'posts': posts,
+            'url_prefix': '/'.join([blog_url_prefix, tags_url_prefix])
+        }, output_path / blog_url_prefix / tags_url_prefix / tag / 'index.html')
 
 
 def parse_post(full_path, root_path):
