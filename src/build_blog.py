@@ -8,6 +8,7 @@ import datetime
 import pathlib
 import re
 import docopt
+import datetime
 
 
 def main(argv):
@@ -133,23 +134,25 @@ def parse_post(full_path, root_path):
     # change the string captured by group 2 from what I can tell.
     # content = regex.sub('<h\\1><a href="#\\2">\\2</a></h\\1>', content)
 
-    repo = git.Repo(str(root_path))
-
     try:
-        latest_commit = next(repo.iter_commits(paths=full_path.name))
-        date = datetime.date.fromtimestamp(latest_commit.authored_date)
+        repo = git.Repo(str(root_path))
+        commits = [{
+            'author': commit.author,
+            'timestamp': datetime.datetime.fromtimestamp(commit.authored_date),
+            'message': commit.message
+        } for commit in repo.iter_commits(paths=full_path.name)]
     except StopIteration:
-        date = datetime.date.today()
+        pass
 
     url = full_path.with_suffix('').name.lower().replace(' ', '_')
 
     post = metadata.copy()
     post.update({
-        'date': date,
         'title': title,
         'first_paragraph': first_paragraph,
         'content': content,
-        'url': url
+        'url': url,
+        'commits': commits
     })
 
     return post
