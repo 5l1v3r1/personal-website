@@ -73,6 +73,7 @@ def build_blog(posts_path, output_path):
         render_template('blog_post', data, output_path / 'blog' / 'posts' / post['url'] / 'index.html')
 
         try:
+            post['has-tags'] = True
             tags = data['post']['tags']
             for tag in tags:
                 if tag not in all_tags:
@@ -81,6 +82,7 @@ def build_blog(posts_path, output_path):
 
         except KeyError:
             # Post has no tags.
+            post['has-tags'] = False
             pass
 
     render_template('blog_index', {
