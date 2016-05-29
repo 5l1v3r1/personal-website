@@ -13,7 +13,7 @@
     }
 </style>
 
-<a href="/blog" class="back-button">&larr; Back to index</a>
+<a href="/blog" class="back-button nav">&larr; Back to index</a>
 
 {{#post}}
     <article class="post">
@@ -31,7 +31,7 @@
         {{{content}}}
     </article>
 {{/post}}
-<nav class="prev-next">
+<nav class="prev-next nav">
     {{#prev}}
         <a href="/blog/posts/{{url}}">&larr; {{title}}</a>
     {{/prev}}

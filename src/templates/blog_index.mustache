@@ -1,8 +1,4 @@
 <style scoped>
-    .post > h1:first-child {
-        margin-top: 0;
-    }
-
     .post > h1 {
         margin-bottom: 0;
     }
@@ -20,6 +16,8 @@
     }
 </style>
 
+<h1>Blog</h1>
+<hr />
 {{#posts}}
     <section class="post">
         <h1><a href="/blog/posts/{{url}}">{{title}}</a></h1>

@@ -21,6 +21,10 @@
                 letter-spacing: 0.02em;
             }
 
+            p {
+                line-height: 1.58;
+            }
+
             a {
                 color: #d02e8f;
                 text-decoration: none;
@@ -43,11 +47,20 @@
                 border-bottom: 1px solid #cbcbcb;
             }
 
+            .nav {
+                font-family: 'Roboto', sans-serif;
+            }
+
             .wrapper {
                 width: 40rem;
                 margin: 0 auto;
                 background-color: white;
                 padding: 3em 5em;
+            }
+
+            .wrapper > h1 {
+                margin-top: 0;
+                text-align: center;
             }
 
             .main-nav {
@@ -81,7 +94,7 @@
         </style>
     </head>
     <body>
-        <nav class="main-nav">
+        <nav class="main-nav nav">
             <div>
                 <a href="/" {{#data.index}}class="current"{{/data.index}}>Home</a>
             </div>
