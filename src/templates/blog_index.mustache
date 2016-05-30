@@ -10,8 +10,32 @@
     .divider:last-child {
         display: none;
     }
+
+    .more-less {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .more-less * {
+        margin-left: 0.25em;
+    }
+
+    .more-less a {
+        border-bottom: none;
+    }
+
+    .more-less a:not(.current) {
+        cursor: pointer;
+    }
+
+    .more-less a.current {
+        color: black;
+    }
 </style>
 
+<div class="more-less">
+    <a id="more" class="current" onclick="more()">more</a> <span>/</span> <a id="less" onclick="less()">less</a>
+</div>
 {{#posts}}
     <section class="post">
         <h1><a href="/blog/posts/{{url}}">{{title}}</a></h1>
@@ -28,3 +52,29 @@
     </section>
     <hr class="divider"/>
 {{/posts}}
+
+<script>
+    function less() {
+        document.querySelector('#more').classList.remove('current');
+        document.querySelector('#less').classList.add('current');
+
+        var elementsToHide = document.querySelectorAll('p, .read-more');
+        for (i = 0; i < elementsToHide.length; i++) {
+            elementsToHide[i].style.display = 'none';
+        }
+    }
+
+    function more() {
+        document.querySelector('#less').classList.remove('current');
+        document.querySelector('#more').classList.add('current');
+
+        var elementsToHide = document.querySelectorAll('p, a.read-more');
+        for (i = 0; i < elementsToHide.length; i++) {
+            if (elementsToHide[i].tagName === 'P') {
+                elementsToHide[i].style.display = 'block';
+            } else if (elementsToHide[i].tagName === 'A') {
+                elementsToHide[i].style.display = 'inline';
+            }
+        }
+    }
+</script>
