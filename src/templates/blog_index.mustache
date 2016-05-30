@@ -1,14 +1,10 @@
 <style scoped>
-    .post > h1 {
+    .post h1 {
         margin-bottom: 0;
     }
 
-    .post > p {
-        margin-bottom: 0;
-    }
-
-    .divider {
-        margin: 2rem 0;
+    .date {
+        margin: 0.7em 0 1em;
     }
 
     .divider:last-child {
@@ -16,13 +12,10 @@
     }
 </style>
 
-<h1>Blog</h1>
-<hr />
 {{#posts}}
     <section class="post">
         <h1><a href="/blog/posts/{{url}}">{{title}}</a></h1>
-        <p class="date">{{date}}</p>
-        {{{first_paragraph}}}
+        <div class="date">{{date}}</div>
         {{#has-tags}}
             <div class="tags">
                 {{#tags}}
@@ -30,6 +23,8 @@
                 {{/tags}}
             </div>
         {{/has-tags}}
+        {{{first_paragraph}}}
+        <a class="read-more" href="/blog/posts/{{url}}">... read more</a>
     </section>
     <hr class="divider"/>
 {{/posts}}

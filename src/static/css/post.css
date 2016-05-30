@@ -1,7 +1,3 @@
-.post > p, .post > ul, .post > ol {
-    text-align: justify;
-}
-
 .post > h1, .post > h2, .post > h3, .post > h4, .post > h5, .post > h6 {
     position: relative;
 }
@@ -13,12 +9,12 @@
     color: #ccc;
 }
 
-.post > h1:hover::before, .post > h2:hover::before, .post > h3:hover::before, .post > h4:hover::before, .post > h5:hover::before, .post > h6:hover::before {
-    color: #b40b70;
+.post > h1:hover::before, .post > h2:hover::before, .post > h3:hover::before, .post > h4:hover::before, .post h5:hover::before, .post h6:hover::before {
+    color: #BF2A49;
 }
 
 .post > h1:active::before, .post > h2:active::before, .post > h3:active::before, .post > h4:active::before, .post > h5:active::before, .post > h6:active::before {
-    color: #870051;
+    color: #7F1C30;
 }
 
 .post h1 > a, .post h2 > a, .post h3 > a, .post h4 > a, .post h5 > a, .post h6 > a {
@@ -28,12 +24,9 @@
 
 .post .date {
     color: #545454;
-    line-height: 1;
-    font-size: 1em;
-}
-
-.post .tags {
-    margin-bottom: 1.5em;
+    font-size: 0.85em;
+    font-style: italic;
+    font-family: 'Roboto', sans-serif;
 }
 
 .post .tags > a {

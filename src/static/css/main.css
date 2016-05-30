@@ -1,0 +1,82 @@
+@import url(https://fonts.googleapis.com/css?family=Droid+Serif);
+@import url(https://fonts.googleapis.com/css?family=Roboto);
+
+body {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.1em;
+    margin: 0 0 5em 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Roboto', sans-serif;
+    letter-spacing: 0.02em;
+}
+
+p, ul, ol {
+    line-height: 1.58;
+    font-family: 'Droid Serif', serif;
+}
+
+a {
+    color: #FF3861;
+    text-decoration: none;
+    border-bottom: 1px solid #FF3861;
+}
+
+a:hover {
+    color: #BF2A49;
+    border-bottom: 1px solid #BF2A49;
+}
+
+a:active {
+    color: #7F1C30;
+    border-bottom: 1px solid #7F1C30;
+}
+
+hr {
+    height: 0;
+    border: 0;
+    border-bottom: 1px solid #cbcbcb;
+}
+
+main {
+    width: 40rem;
+    margin: 0 auto;
+}
+
+main > h1 {
+    text-align: center;
+}
+
+nav.main {
+    display: flex;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.9em;
+    padding-left: 2em;
+}
+
+nav.main a {
+    color: #FF3861;
+    border-bottom: none;
+    padding: 1em;
+}
+
+nav.main a:hover {
+    background-color: #FF3861;
+    color: white;
+}
+
+nav.main a.current:not(:hover) {
+    color: black;
+}
+
+pre {
+    background: none !important;
+    padding: 0 0 0 18px !important;
+    margin: 1em 0 1em -20px !important;
+    border-left: solid 2px #ccc;
+}
+
+.divider {
+    margin: 2em 0;
+}

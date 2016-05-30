@@ -5,106 +5,17 @@
         <title>mhgbrg - {{data.title}}</title>
         <meta charset="utf-8" />
         <link rel="stylesheet" href="/prism/prism.css" />
+        <link rel="stylesheet" href="/css/main.css" />
         <link rel="stylesheet" href="/css/post.css" />
-        <style>
-            @import url(https://fonts.googleapis.com/css?family=Droid+Serif);
-            @import url(https://fonts.googleapis.com/css?family=Roboto);
-
-            body {
-                font-family: 'Droid Serif', serif;
-                font-size: 1.1em;
-                background-color: #f6f6f6;
-            }
-
-            h1, h2, h3, h4, h5, h6 {
-                font-family: 'Roboto', sans-serif;
-                letter-spacing: 0.02em;
-            }
-
-            p {
-                line-height: 1.58;
-            }
-
-            a {
-                color: #d02e8f;
-                text-decoration: none;
-                border-bottom: 1px solid #d02e8f;
-            }
-
-            a:hover {
-                color: #b40b70;
-                border-bottom: 1px solid #b40b70;
-            }
-
-            a:active {
-                color: #870051;
-                border-bottom: 1px solid #870051;
-            }
-
-            hr {
-                height: 0;
-                border: 0;
-                border-bottom: 1px solid #cbcbcb;
-            }
-
-            .nav {
-                font-family: 'Roboto', sans-serif;
-            }
-
-            .wrapper {
-                width: 40rem;
-                margin: 0 auto;
-                background-color: white;
-                padding: 3em 5em;
-            }
-
-            .wrapper > h1 {
-                margin-top: 0;
-                text-align: center;
-            }
-
-            .main-nav {
-                display: flex;
-                margin-left: 1em;
-                margin-top: 1em;
-                font-family: 'Roboto', sans-serif;
-                font-size: 0.9em;
-            }
-
-            .main-nav > div {
-                padding: 0.5em 0.5em;
-            }
-
-            .main-nav a {
-                border-bottom: none;
-            }
-
-            .main-nav a.current {
-                color: black;
-                border-bottom: 2px solid black;
-                padding-bottom: 3px;
-            }
-
-            pre {
-                background: none !important;
-                padding: 0 0 0 18px !important;
-                margin: 1em 0 1em -20px !important;
-                border-left: solid 2px #ccc;
-            }
-        </style>
     </head>
     <body>
-        <nav class="main-nav nav">
-            <div>
-                <a href="/" {{#data.index}}class="current"{{/data.index}}>Home</a>
-            </div>
-            <div>
-                <a href="/blog" {{#data.blog}}class="current"{{/data.blog}}>Blog</a>
-            </div>
+        <nav class="main">
+            <a href="/" {{#data.index}}class="current"{{/data.index}}>Home</a>
+            <a href="/blog" {{#data.blog}}class="current"{{/data.blog}}>Blog</a>
         </nav>
-        <div class="wrapper">
+        <main>
             {{{body}}}
-        </div>
+        </main>
         <script src="/prism/prism.js"></script>
     </body>
 </html>

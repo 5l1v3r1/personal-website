@@ -1,10 +1,14 @@
 <style scoped>
-    .post > header > h1 {
+    .post header h1 {
         margin-bottom: 0;
     }
 
-    .post > header {
+    .post header {
         text-align: center;
+    }
+
+    .date {
+        margin: 0.7em 0 1em;
     }
 
     .prev-next {
@@ -19,14 +23,14 @@
     <article class="post">
         <header>
             <h1>{{title}}</h1>
-            <p class="date">{{date}}</p>
+            <div class="date">{{date}}</div>
             <div class="tags">
                 {{#tags}}
                     <a href="/blog/tags/{{.}}">#{{.}}</a>
                 {{/tags}}
             </div>
         </header>
-        <hr />
+        <hr class="divider" />
         {{{first_paragraph}}}
         {{{content}}}
     </article>
