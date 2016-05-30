@@ -9,6 +9,7 @@ import pathlib
 import re
 import docopt
 import datetime
+import dateparser
 
 
 def main(argv):
@@ -59,6 +60,8 @@ def build_blog(posts_path, output_path):
     all_tags = {}
 
     for i, post in enumerate(posts):
+        post['date'] = post['date'].strftime('%B %-d, %Y')
+
         data = {
             'title': post['title'],
             'post': post,
@@ -79,7 +82,6 @@ def build_blog(posts_path, output_path):
                 if tag not in all_tags:
                     all_tags[tag] = []
                 all_tags[tag].append(post)
-
         except KeyError:
             # Post has no tags.
             post['has-tags'] = False
@@ -154,7 +156,8 @@ def parse_post(full_path, root_path):
         'first_paragraph': first_paragraph,
         'content': content,
         'url': url,
-        'commits': commits
+        'commits': commits,
+        'date': dateparser.parse(post['date'])
     })
 
     return post
