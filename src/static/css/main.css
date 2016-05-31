@@ -80,3 +80,7 @@ pre {
 .divider {
     margin: 2em 0;
 }
+
+.hidden {
+    display: none;
+}

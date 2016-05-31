@@ -60,7 +60,7 @@
 
         var elementsToHide = document.querySelectorAll('p, .read-more');
         for (i = 0; i < elementsToHide.length; i++) {
-            elementsToHide[i].style.display = 'none';
+            elementsToHide[i].classList.add('hidden');
         }
     }
 
@@ -70,11 +70,7 @@
 
         var elementsToHide = document.querySelectorAll('p, a.read-more');
         for (i = 0; i < elementsToHide.length; i++) {
-            if (elementsToHide[i].tagName === 'P') {
-                elementsToHide[i].style.display = 'block';
-            } else if (elementsToHide[i].tagName === 'A') {
-                elementsToHide[i].style.display = 'inline';
-            }
+            elementsToHide[i].classList.remove('hidden');
         }
     }
 </script>
