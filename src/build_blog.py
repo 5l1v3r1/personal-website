@@ -39,7 +39,6 @@ def build_blog(posts_path, output_path):
     """
     Goes through the posts folder, parses all posts and copies the rendered
     html to the output folder. Posts must have the file ending .markdown.
-    All non-post files will be copied to the output folder without modification.
 
     :param posts_path: The folder to read posts from. If this folder doesn't
                          exist the script will exit without doing anything.
@@ -50,24 +49,25 @@ def build_blog(posts_path, output_path):
         print('Error: Folder {} does not exist.'.format(str(posts_path)))
         sys.exit(2)
 
+    # Find all markdown files.
     files = list(posts_path.glob('**/*.markdown'))
-    # Ignore all files and folders that start with an underscore.
-    ignore = list(posts_path.glob('**/_*.markdown')) + list(posts_path.glob('**/_*/*.markdown'))
+    ignore = list(posts_path.glob('**/_*.markdown')) + list(posts_path.glob('**/_*/*.markdown')) # Ignore all files and folders that start with an underscore.
 
+    # Parse the content of each file.
     posts = [parse_post(file, posts_path) for file in files if not file in ignore]
+
+    # Sort by date (we assume that date exists).
     posts.sort(key=lambda post: post['date'], reverse=True)
 
-    all_tags = {}
-
+    # Render all posts.
     for i, post in enumerate(posts):
-        post['date'] = post['date'].strftime('%B %-d, %Y')
-
         data = {
             'title': post['title'],
-            'post': post,
-            'blog': True
+            'blog': True,
+            'post': post
         }
 
+        # Add links to next and previous posts.
         if not i == 0:
             data['next'] = posts[i - 1]
         if not i == len(posts) - 1:
@@ -75,24 +75,25 @@ def build_blog(posts_path, output_path):
 
         render_template('blog_post', data, output_path / 'blog' / 'posts' / post['url'] / 'index.html')
 
-        try:
-            post['has-tags'] = True
-            tags = data['post']['tags']
-            for tag in tags:
-                if tag not in all_tags:
-                    all_tags[tag] = []
-                all_tags[tag].append(post)
-        except KeyError:
-            # Post has no tags.
-            post['has-tags'] = False
-            pass
-
     render_template('blog_index', {
         'blog': True,
         'title': 'Blog',
         'posts': posts
     }, output_path / 'blog' / 'index.html')
 
+    all_tags = {}
+    for post in posts:
+        try:
+            tags = post['tags']
+            for tag in tags:
+                if tag not in all_tags:
+                    all_tags[tag] = []
+                all_tags[tag].append(post)
+        except KeyError:
+            # Post has no tags.
+            pass
+
+    # Render all tag indices.
     for (tag, posts) in all_tags.items():
         render_template('blog_index', {
             'blog': True,
@@ -101,66 +102,57 @@ def build_blog(posts_path, output_path):
         }, output_path / 'blog' / 'tags' / tag / 'index.html')
 
 
-def parse_post(full_path, root_path):
+def parse_post(path_to_file, root_path):
     """
     Parses a post written in markdown with optional metadata from a file.
 
     :param dir_entry: A directory entry for the post file to parse.
     :returns: A dictionary representing a single post.
     """
-    file_content = full_path.read_text()
-    segments = file_content.split('\n\n')
+    # Read entire file.
+    file_content = path_to_file.read_text()
 
+    # Parse metadata.
+    segments = file_content.split('\n\n')
     metadata = dict()
     if not segments[0].startswith('# '):
-        # File didn't start with title -> there is metadata.
+        # File didn't start with title => there is metadata.
         metadata = parse_metadata(segments[0])
         segments = segments[1:]
 
-    markdown = mistune.Markdown()
-
+    # Split content into parts.
     title = segments[0].replace('# ', '')
-    first_paragraph = markdown(segments[1])
-    content = markdown('\n\n'.join(segments[2:]))
+    content = '\n\n'.join(segments[1:])
+    first_paragraph = segments[1]
 
-    reading_time = calculate_reading_time(file_content)
-
-    # This regex matches all headings and captures their level and their text.
-    regex = re.compile('<h(.)>(.*)<\/h\\1>')
-    for match in re.finditer(regex, content):
-        h_number = match.group(1)
-        heading = match.group(2)
-        anchor = '{0}'.format(heading.lower().replace(' ', '_'))
-
-        formatted_heading = '<h{0}><a name="{1}" href="#{1}">{2}</a></h{0}>'.format(h_number, anchor, heading)
-
-        content = content.replace(match.group(0), formatted_heading)
-
-    # A simpler way to add links to headings. Though with this method you can't
-    # change the string captured by group 2 from what I can tell.
-    # content = regex.sub('<h\\1><a href="#\\2">\\2</a></h\\1>', content)
-
+    # Generate additional attributes.
+    url = path_to_file.with_suffix('').name.lower().replace(' ', '_')
+    formatted_date = metadata['date'].strftime('%B %-d, %Y')
+    reading_time = calculate_reading_time(content)
+    commits = get_commit_history(path_to_file, root_path)
     try:
-        repo = git.Repo(str(root_path))
-        commits = [{
-            'author': commit.author,
-            'timestamp': datetime.datetime.fromtimestamp(commit.authored_date),
-            'message': commit.message
-        } for commit in repo.iter_commits(paths=full_path.name)]
-    except StopIteration:
+        has_tags = len(metadata['tags']) > 0
+    except KeyError:
+        has_tags = False
         pass
 
-    url = full_path.with_suffix('').name.lower().replace(' ', '_')
+    # Transform content to HTML.
+    markdown = mistune.Markdown()
+    content = markdown(content)
+    content = add_anchors_to_headings(content)
+    first_paragraph = markdown(first_paragraph)
 
+    # Put everything together.
     post = metadata.copy()
     post.update({
         'title': title,
-        'first_paragraph': first_paragraph,
         'content': content,
+        'first_paragraph': first_paragraph,
         'url': url,
+        'formatted_date': formatted_date,
+        'reading_time': reading_time,
         'commits': commits,
-        'date': dateparser.parse(post['date']),
-        'reading_time': reading_time
+        'has_tags': has_tags
     })
 
     return post
@@ -185,9 +177,49 @@ def parse_metadata(block):
         if len(values) > 1:
             metadata[key] = values
         else:
-            metadata[key] = value
+            if key == 'date':
+                metadata[key] = dateparser.parse(value)
+            else:
+                metadata[key] = value
 
     return metadata
+
+
+def add_anchors_to_headings(content):
+    regex = re.compile('<h(.)>(.*)<\/h\\1>') # This regex matches all headings and captures their level and their text.
+    for match in re.finditer(regex, content):
+        h_number = match.group(1)
+        heading = match.group(2)
+        anchor = '{0}'.format(heading.lower().replace(' ', '_'))
+
+        formatted_heading = '<h{0}><a name="{1}" href="#{1}">{2}</a></h{0}>'.format(h_number, anchor, heading)
+
+        content = content.replace(match.group(0), formatted_heading)
+
+    return content
+
+
+def calculate_reading_time(text):
+    # https://medium.com/the-story/read-time-and-you-bc2048ab620c
+    WPM = 275 # How many words that are read per minute.
+    word_count = len(re.findall(r'\w+', text))
+    return round(word_count / WPM);
+
+
+def get_commit_history(path_to_file, repo_root_path):
+    commits = []
+
+    try:
+        repo = git.Repo(str(repo_root_path))
+        commits = [{
+            'author': commit.author,
+            'timestamp': datetime.datetime.fromtimestamp(commit.authored_date),
+            'message': commit.message
+        } for commit in repo.iter_commits(paths=path_to_file.name)]
+    except StopIteration:
+        pass
+
+    return commits
 
 
 def render_template(template, data, path):
@@ -206,12 +238,6 @@ def render_template(template, data, path):
     body = renderer.render_name(template, data)
     html = renderer.render_name('main', {'body': body, 'data': data})
     path.write_text(html)
-
-
-def calculate_reading_time(text):
-    WPM = 275
-    word_count = len(re.findall(r'\w+', text))
-    return round(word_count / WPM);
 
 
 if __name__ == '__main__':

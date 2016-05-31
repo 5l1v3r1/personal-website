@@ -40,14 +40,14 @@
     {{#posts}}
         <section class="post">
             <h1><a href="/blog/posts/{{url}}">{{title}}</a></h1>
-            <div class="date">{{date}} &middot; {{reading_time}} min</div>
-            {{#has-tags}}
+            <div class="date">{{formatted_date}} &middot; {{reading_time}} min</div>
+            {{#has_tags}}
                 <div class="tags">
                     {{#tags}}
                         <a href="/blog/tags/{{.}}">#{{.}}</a>
                     {{/tags}}
                 </div>
-            {{/has-tags}}
+            {{/has_tags}}
             {{{first_paragraph}}}
             <a class="read-more" href="/blog/posts/{{url}}">... read more</a>
         </section>

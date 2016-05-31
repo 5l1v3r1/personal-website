@@ -23,12 +23,14 @@
     <article class="post">
         <header>
             <h1>{{title}}</h1>
-            <div class="date">{{date}} &middot; {{reading_time}} min</div>
-            <div class="tags">
-                {{#tags}}
-                    <a href="/blog/tags/{{.}}">#{{.}}</a>
-                {{/tags}}
-            </div>
+            <div class="date">{{formatted_date}} &middot; {{reading_time}} min</div>
+            {{#has_tags}}
+                <div class="tags">
+                    {{#tags}}
+                        <a href="/blog/tags/{{.}}">#{{.}}</a>
+                    {{/tags}}
+                </div>
+            {{/has_tags}}
         </header>
         <hr class="divider" />
         {{{first_paragraph}}}
