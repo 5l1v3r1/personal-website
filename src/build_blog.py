@@ -123,6 +123,8 @@ def parse_post(full_path, root_path):
     first_paragraph = markdown(segments[1])
     content = markdown('\n\n'.join(segments[2:]))
 
+    reading_time = calculate_reading_time(file_content)
+
     # This regex matches all headings and captures their level and their text.
     regex = re.compile('<h(.)>(.*)<\/h\\1>')
     for match in re.finditer(regex, content):
@@ -157,7 +159,8 @@ def parse_post(full_path, root_path):
         'content': content,
         'url': url,
         'commits': commits,
-        'date': dateparser.parse(post['date'])
+        'date': dateparser.parse(post['date']),
+        'reading_time': reading_time
     })
 
     return post
@@ -203,6 +206,12 @@ def render_template(template, data, path):
     body = renderer.render_name(template, data)
     html = renderer.render_name('main', {'body': body, 'data': data})
     path.write_text(html)
+
+
+def calculate_reading_time(text):
+    WPM = 275
+    word_count = len(re.findall(r'\w+', text))
+    return round(word_count / WPM);
 
 
 if __name__ == '__main__':
