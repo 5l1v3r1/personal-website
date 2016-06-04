@@ -56,16 +56,25 @@
 </section>
 
 <script>
+    if (Modernizr.localstorage) {
+        var state = localStorage.getItem('blog-index-state');
+        if (state === 'less') {
+            less();
+        }
+    }
+
     function less() {
         document.querySelector('#more').classList.remove('current');
         document.querySelector('#less').classList.add('current');
         addClass('p, .read-more', 'hidden');
+        localStorage.setItem('blog-index-state', 'less');
     }
 
     function more() {
         document.querySelector('#less').classList.remove('current');
         document.querySelector('#more').classList.add('current');
         removeClass('p, a.read-more', 'hidden');
+        localStorage.setItem('blog-index-state', 'more');
     }
 
     function toggleClass(query, className, action) {
