@@ -70,13 +70,6 @@ nav.main a.current:not(:hover) {
     color: black;
 }
 
-pre {
-    background: none !important;
-    padding: 0 0 0 18px !important;
-    margin: 1em 0 1em -20px !important;
-    border-left: solid 2px #ccc;
-}
-
 .divider {
     margin: 2em 0;
 }

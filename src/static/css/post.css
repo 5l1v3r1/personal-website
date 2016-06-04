@@ -22,6 +22,14 @@
     color: inherit;
 }
 
+.post p, .post ul, .post ol, .post pre {
+    margin: 1.5em 0;
+}
+
+.post hr {
+    margin: 1.5em 0;
+}
+
 .post .date {
     color: #545454;
     font-size: 0.85em;
@@ -50,4 +58,17 @@
 
 .post .tags > a:active {
     background-color: #ccc;
+}
+
+.post pre {
+    background: none !important;
+    padding: 20px 40px !important;
+    margin: 1em -40px 1em -40px !important;
+    background-color: #f6f6f6 !important;
+}
+
+.post blockquote {
+    padding: 0 0 0 18px;
+    border-left: solid 2px #ccc;
+    font-style: italic;
 }
