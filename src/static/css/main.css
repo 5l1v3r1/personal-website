@@ -5,6 +5,7 @@ body {
     font-family: 'Roboto', sans-serif;
     font-size: 1.1em;
     margin: 0 0 5em 0;
+    border-top: 4px solid #FF3861;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -56,18 +57,22 @@ nav.main {
 }
 
 nav.main a {
-    color: #FF3861;
+    color: black;
     border-bottom: none;
     padding: 1em;
 }
 
-nav.main a:hover {
+nav.main a.current {
     background-color: #FF3861;
     color: white;
 }
 
-nav.main a.current:not(:hover) {
-    color: black;
+nav.main a:hover:not(.current) {
+    background-color: #eee;
+}
+
+nav.main a:active:not(.current) {
+    background-color: #ddd;
 }
 
 .divider {

@@ -19,9 +19,15 @@
     .post .tags {
         margin-bottom: 2em;
     }
+
+    .back-button {
+        position: absolute;
+        margin-left: -150px;
+        margin-top: 7px;
+    }
 </style>
 
-<a href="/blog" class="back-button nav">&larr; Back to index</a>
+<a href="/blog" class="back-button">&larr; Back to index</a>
 
 {{#post}}
     <article class="post">
@@ -40,11 +46,12 @@
         {{{content}}}
     </article>
 {{/post}}
-<nav class="prev-next nav">
+
+<nav class="prev-next">
     {{#prev}}
         <a href="/blog/posts/{{url}}">&larr; {{title}}</a>
     {{/prev}}
     {{#next}}
-        <a class="next" href="/blog/posts/{{url}}">{{title}} &rarr;</a>
+        <a href="/blog/posts/{{url}}">{{title}} &rarr;</a>
     {{/next}}
 </nav>
