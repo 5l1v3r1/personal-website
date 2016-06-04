@@ -5,6 +5,7 @@ body {
     font-family: 'Roboto', sans-serif;
     font-size: 1.1em;
     margin: 0 0 5em 0;
+    border-top: 4px solid #FF3861;
 }
 
 h1, h2, h3, h4, h5, h6 {
