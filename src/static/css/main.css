@@ -13,7 +13,7 @@ h1, h2, h3, h4, h5, h6 {
     letter-spacing: 0.02em;
 }
 
-p, ul, ol {
+p, ul, ol, figure {
     line-height: 1.58;
     font-family: 'Droid Serif', serif;
 }

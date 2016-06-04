@@ -64,7 +64,8 @@ def build_blog(posts_path, output_path):
         data = {
             'title': post['title'],
             'blog': True,
-            'post': post
+            'post': post,
+            'base_url': '/blog/'
         }
 
         # Add links to next and previous posts.
@@ -140,6 +141,7 @@ def parse_post(path_to_file, root_path):
     markdown = mistune.Markdown()
     content = markdown(content)
     content = add_anchors_to_headings(content)
+    content = wrap_imgs_with_figures(content)
     first_paragraph = markdown(first_paragraph)
 
     # Put everything together.
@@ -197,6 +199,10 @@ def add_anchors_to_headings(content):
         content = content.replace(match.group(0), formatted_heading)
 
     return content
+
+
+def wrap_imgs_with_figures(content):
+    return re.sub(r'<p>(<img.*?alt="(.*?)">)</p>', r'<figure>\1<figcaption>\2</figcaption></figure>', content)
 
 
 def calculate_reading_time(text):

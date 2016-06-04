@@ -30,6 +30,15 @@
     margin: 1.5em 0;
 }
 
+.post figure {
+    text-align: center;
+    font-size: 0.8em;
+}
+
+.post img {
+    width: 90%;
+}
+
 .post .date {
     color: #545454;
     font-size: 0.85em;
