@@ -188,19 +188,13 @@ def parse_metadata(block):
 
 
 def add_anchors_to_headings(content):
-    return re.sub(r'', '', content)
+    def handle_match(match):
+        heading_level = match.group(1)
+        text = match.group(2)
+        anchor = text.lower().replace(' ', '_')
+        return '<h{0}><a name="{2}" href="#{2}">{1}</a></h{0}>'.format(heading_level, text, anchor)
 
-    regex = re.compile('<h(.)>(.*)<\/h\\1>') # This regex matches all headings and captures their level and their text.
-    for match in re.finditer(regex, content):
-        h_number = match.group(1)
-        heading = match.group(2)
-        anchor = '{0}'.format(heading.lower().replace(' ', '_'))
-
-        formatted_heading = '<h{0}><a name="{1}" href="#{1}">{2}</a></h{0}>'.format(h_number, anchor, heading)
-
-        content = content.replace(match.group(0), formatted_heading)
-
-    return content
+    return re.sub(r'<h(\d)>(.*?)<\/h\1>', handle_match, content)
 
 
 def wrap_imgs_with_figures(content):
