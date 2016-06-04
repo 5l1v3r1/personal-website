@@ -188,6 +188,8 @@ def parse_metadata(block):
 
 
 def add_anchors_to_headings(content):
+    return re.sub(r'', '', content)
+
     regex = re.compile('<h(.)>(.*)<\/h\\1>') # This regex matches all headings and captures their level and their text.
     for match in re.finditer(regex, content):
         h_number = match.group(1)
@@ -202,7 +204,7 @@ def add_anchors_to_headings(content):
 
 
 def wrap_imgs_with_figures(content):
-    return re.sub(r'<p>(<img.*?alt="(.*?)">)</p>', r'<figure>\1<figcaption>\2</figcaption></figure>', content)
+    return re.sub(r'<p>(<img.*?alt="(.*?)">)<\/p>', r'<figure>\1<figcaption>\2</figcaption></figure>', content)
 
 
 def calculate_reading_time(text):
