@@ -23,4 +23,4 @@ open:
 	open 'http://localhost:8000'
 
 watch:
-	while true; do find src posts -not -path '*/\.*' -type f | entr -d make build_site || break; done
+	find src posts -not -path '*/\.*' -type f | entr make build_site
