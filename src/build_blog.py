@@ -64,8 +64,7 @@ def build_blog(posts_path, output_path):
         data = {
             'title': post['title'],
             'blog': True,
-            'post': post,
-            'base_url': '/blog/'
+            'post': post
         }
 
         # Add links to next and previous posts.

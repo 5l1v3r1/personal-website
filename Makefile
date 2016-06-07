@@ -11,7 +11,7 @@ fetch_posts:
 
 copy_static:
 	cp -r src/static/* output/
-	rsync -av --exclude '*.markdown' --exclude '.*' --exclude '_*' posts/ output/blog
+	rsync -av --exclude '*.markdown' --exclude '.*' --exclude '_*' posts/ output/
 
 clean:
 	rm -rf output/*
