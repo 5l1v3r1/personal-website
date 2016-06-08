@@ -70,10 +70,14 @@
 }
 
 .post pre {
-    background: none !important;
     padding: 20px 40px !important;
     margin: 1em -40px 1em -40px !important;
     background-color: #f6f6f6 !important;
+}
+
+.post p code {
+    background-color: #f6f6f6;
+    padding: 3px 6px;
 }
 
 .post blockquote {
