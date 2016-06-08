@@ -36,15 +36,6 @@ Options:
 
 
 def build_blog(posts_path, output_path):
-    """
-    Goes through the posts folder, parses all posts and copies the rendered
-    html to the output folder. Posts must have the file ending .markdown.
-
-    :param posts_path: The folder to read posts from. If this folder doesn't
-                         exist the script will exit without doing anything.
-    :param output_path: The folder to output html to. Will be created if it
-                          doesn't exist.
-    """
     if not posts_path.exists():
         print('Error: Folder {} does not exist.'.format(str(posts_path)))
         sys.exit(2)
@@ -103,12 +94,6 @@ def build_blog(posts_path, output_path):
 
 
 def parse_post(path_to_file, root_path):
-    """
-    Parses a post written in markdown with optional metadata from a file.
-
-    :param dir_entry: A directory entry for the post file to parse.
-    :returns: A dictionary representing a single post.
-    """
     # Read entire file.
     file_content = path_to_file.read_text()
 
@@ -160,16 +145,6 @@ def parse_post(path_to_file, root_path):
 
 
 def parse_metadata(block):
-    """
-    Parses a block of metadata. Metadata attributes are divided into key and
-    value, separated by a colon and a space, with one attribute per line. Values
-    can be either single values or comma separated lists. If a value is a comma
-    separated list it will be converted to a list object, otherwise it will be
-    a simple string.
-
-    :param block: A string with a block of metadata.
-    :return: A dictionary of all key-value pairs found in a metadata block.
-    """
     metadata = dict()
     lines = block.split('\n')
     for line in lines:
@@ -224,13 +199,6 @@ def get_commit_history(path_to_file, repo_root_path):
 
 
 def render_template(template, data, path):
-    """
-    Renders a template with data and writes the result to a new file.
-
-    :param template: The name of the template to use when rendering.
-    :param data: The data to use when rendering.
-    :param path: The path to write the rendered file to.
-    """
     path = pathlib.Path(path)
     if not path.parent.exists():
         path.parent.mkdir(parents=True)
