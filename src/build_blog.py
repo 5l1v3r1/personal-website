@@ -178,8 +178,11 @@ def wrap_imgs_with_figures(content):
 def calculate_reading_time(text):
     # https://medium.com/the-story/read-time-and-you-bc2048ab620c
     WPM = 275 # How many words that are read per minute.
+    TIME_PER_IMAGE = 12
+
     word_count = len(re.findall(r'\w+', text))
-    return round(word_count / WPM);
+    img_count = len(re.findall(r'!\[.*\]\(.*\)', text))
+    return round(word_count / WPM + img_count * TIME_PER_IMAGE / 60);
 
 
 def get_commit_history(path_to_file, repo_root_path):
