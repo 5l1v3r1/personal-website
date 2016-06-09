@@ -33,6 +33,7 @@ Options:
     build_blog(posts_path, output_path)
 
     render_template('index', {'title': 'Home', 'index': True}, output_path / 'index.html')
+    render_template('goals', {'title': 'Goals', 'goals': True}, output_path / 'goals' / 'index.html')
 
 
 def build_blog(posts_path, output_path):
