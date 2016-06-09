@@ -10,6 +10,8 @@ import re
 import docopt
 import datetime
 import dateparser
+import requests
+import configparser
 
 
 def main(argv):
@@ -33,7 +35,12 @@ Options:
     build_blog(posts_path, output_path)
 
     render_template('index', {'title': 'Home', 'index': True}, output_path / 'index.html')
-    render_template('goals', {'title': 'Goals', 'goals': True}, output_path / 'goals' / 'index.html')
+
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+
+    commit_streak = get_github_commit_streak(config['github']['api_key'], config['github']['email'], verbose=True)
+    render_template('goals', {'title': 'Goals', 'goals': True, 'streak': commit_streak}, output_path / 'goals' / 'index.html')
 
 
 def build_blog(posts_path, output_path):
@@ -211,6 +218,46 @@ def render_template(template, data, path):
     body = renderer.render_name(template, data)
     html = renderer.render_name('main', {'body': body, 'data': data})
     path.write_text(html)
+
+
+def get_github_commit_streak(api_key, email, verbose=False):
+    def json_request(url, headers):
+        response = requests.get(url, headers=headers)
+
+        if response.status_code != 200:
+            raise ConnectionError(response.json())
+
+        return response.json()
+
+    auth_header = {'Authorization': 'token {0}'.format(api_key)}
+
+    repos = json_request('https://api.github.com/user/repos', auth_header)
+
+    dates_with_commits = set()
+
+    for repo in repos:
+        if verbose:
+            print('Fetching commits for {0}...'.format(repo['name']))
+
+        commits_url = repo['commits_url'].replace('{/sha}', '') + '?author=' + email
+        commits = json_request(commits_url, auth_header)
+
+        for commit in commits:
+            try:
+                if len(commit['parents']) <= 1:
+                    date = commit['commit']['author']['date'][:10]
+                    dates_with_commits.add(date)
+            except TypeError as e:
+                # Something missing from commit, disregard it.
+                pass
+
+    count = 0
+    date = datetime.date.today()
+    while date.strftime('%Y-%m-%d') in dates_with_commits:
+        count = count + 1
+        date = date - datetime.timedelta(days=1)
+
+    return count
 
 
 if __name__ == '__main__':
