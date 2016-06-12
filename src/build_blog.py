@@ -40,6 +40,9 @@ Options:
     config.read('config.ini')
 
     commit_streak = get_github_commit_streak(config['github']['api_key'], config['github']['email'], verbose=True)
+
+    last_song = get_last_song(config['last.fm']['api_key'])
+
     render_template('goals', {'title': 'Goals', 'goals': True, 'streak': commit_streak}, output_path / 'goals' / 'index.html')
 
 
@@ -258,6 +261,11 @@ def get_github_commit_streak(api_key, email, verbose=False):
         date = date - datetime.timedelta(days=1)
 
     return count
+
+
+def get_last_song(api_key):
+    print(api_key)
+    return False
 
 
 if __name__ == '__main__':
