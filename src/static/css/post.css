@@ -85,3 +85,8 @@
     border-left: solid 2px #ccc;
     font-style: italic;
 }
+
+.footnotes {
+  font-size: 0.8em;
+  color: #545454;
+}
