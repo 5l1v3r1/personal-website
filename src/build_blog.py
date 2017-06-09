@@ -36,14 +36,14 @@ Options:
 
     render_template('index', {'title': 'Home', 'index': True}, output_path / 'index.html')
 
-    config = configparser.ConfigParser()
-    config.read('config.ini')
+    # config = configparser.ConfigParser()
+    # config.read('config.ini')
 
-    commit_streak = get_github_commit_streak(config['github']['api_key'], config['github']['email'], verbose=True)
+    # commit_streak = get_github_commit_streak(config['github']['api_key'], config['github']['email'], verbose=True)
 
-    last_song = get_last_song(config['last.fm']['api_key'])
+    # last_song = get_last_song(config['last.fm']['api_key'])
 
-    render_template('goals', {'title': 'Goals', 'goals': True, 'streak': commit_streak}, output_path / 'goals' / 'index.html')
+    # render_template('goals', {'title': 'Goals', 'goals': True, 'streak': commit_streak}, output_path / 'goals' / 'index.html')
 
 
 def build_blog(posts_path, output_path):
